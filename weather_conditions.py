@@ -142,7 +142,7 @@ class WeatherConditions:
         return temperature, precipitation, condition
 
 
-if __name__ is '__main__':
+if __name__ == '__main__':
     
     import pandas as pd
     from datetime import datetime
