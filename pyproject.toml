@@ -1,0 +1,15 @@
+[project]
+name = "grocery_synthetic_data"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "Roberto Balbinotti", email = "rbalbinotti@gmail.com"},
+]
+dependencies = []
+requires-python = "==3.11.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false

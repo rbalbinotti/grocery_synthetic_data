@@ -1,0 +1,1703 @@
+{
+  "All-Purpose Flour": {
+    "category": "Pantry",
+    "sub_category": "Baking Supplies",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Almond Flour": {
+    "category": "Pantry",
+    "sub_category": "Baking Supplies",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 45,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Almond Milk": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Plant-Based Milk",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Anchovies": {
+    "category": "Pantry",
+    "sub_category": "Canned Fish",
+    "shelf_life_days": 1095,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Apple": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 21,
+    "maximum_days_on_sale": 7,
+    "seasonality": ["September", "October", "November"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Apricot": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": ["May", "June", "July"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Arabica Coffee": {
+    "category": "Beverages",
+    "sub_category": "Coffee",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Arborio Rice": {
+    "category": "Pantry",
+    "sub_category": "Grains & Rice",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Asparagus": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": ["March", "April", "May", "June"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Avocado": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": ["January", "February", "March", "April", "May", "June"],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Avocado Oil": {
+    "category": "Pantry",
+    "sub_category": "Oils & Vinegars",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Bagels": {
+    "category": "Bakery",
+    "sub_category": "Bread",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Baking Powder": {
+    "category": "Pantry",
+    "sub_category": "Baking Supplies",
+    "shelf_life_days": 540,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Baking Soda": {
+    "category": "Pantry",
+    "sub_category": "Baking Supplies",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Banana": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Basmati Rice": {
+    "category": "Pantry",
+    "sub_category": "Grains & Rice",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Bell Pepper": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 10,
+    "maximum_days_on_sale": 4,
+    "seasonality": ["July", "August", "September", "October"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Black Coffee": {
+    "category": "Beverages",
+    "sub_category": "Coffee",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Black Rice": {
+    "category": "Pantry",
+    "sub_category": "Grains & Rice",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Black Tea": {
+    "category": "Beverages",
+    "sub_category": "Tea",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Black Tea Bags": {
+    "category": "Beverages",
+    "sub_category": "Tea",
+    "shelf_life_days": 540,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Bread Flour": {
+    "category": "Pantry",
+    "sub_category": "Baking Supplies",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Broccoli": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": ["October", "November", "December", "January", "February", "March"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Brown Rice": {
+    "category": "Pantry",
+    "sub_category": "Grains & Rice",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Brown Sugar": {
+    "category": "Pantry",
+    "sub_category": "Baking Supplies",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Butter": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 30,
+    "maximum_days_on_sale": 10,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Butter Biscuit": {
+    "category": "Pantry",
+    "sub_category": "Snacks",
+    "shelf_life_days": 90,
+    "maximum_days_on_sale": 30,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Buttermilk": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 14,
+    "maximum_days_on_sale": 5,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Cabbage": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 14,
+    "maximum_days_on_sale": 7,
+    "seasonality": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Canned Beans": {
+    "category": "Pantry",
+    "sub_category": "Canned Goods",
+    "shelf_life_days": 1095,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Canned Corn": {
+    "category": "Pantry",
+    "sub_category": "Canned Goods",
+    "shelf_life_days": 1095,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Canned Green Beans": {
+    "category": "Pantry",
+    "sub_category": "Canned Goods",
+    "shelf_life_days": 1095,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Canned Peaches": {
+    "category": "Pantry",
+    "sub_category": "Canned Goods",
+    "shelf_life_days": 1095,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Canned Sardines": {
+    "category": "Pantry",
+    "sub_category": "Canned Fish",
+    "shelf_life_days": 1095,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Canned Soup": {
+    "category": "Pantry",
+    "sub_category": "Canned Goods",
+    "shelf_life_days": 1095,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Canned Tomatoes": {
+    "category": "Pantry",
+    "sub_category": "Canned Goods",
+    "shelf_life_days": 1095,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Canned Tuna": {
+    "category": "Pantry",
+    "sub_category": "Canned Fish",
+    "shelf_life_days": 1095,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Canola Oil": {
+    "category": "Pantry",
+    "sub_category": "Oils & Vinegars",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Carrot": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 21,
+    "maximum_days_on_sale": 7,
+    "seasonality": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Cashews": {
+    "category": "Pantry",
+    "sub_category": "Nuts & Seeds",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Cauliflower": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": ["September", "October", "November", "December", "January", "February", "March"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Celery": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 14,
+    "maximum_days_on_sale": 7,
+    "seasonality": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Chamomile Tea Bags": {
+    "category": "Beverages",
+    "sub_category": "Tea",
+    "shelf_life_days": 540,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Cheddar Cheese": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 21,
+    "maximum_days_on_sale": 7,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Cheese": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 21,
+    "maximum_days_on_sale": 7,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Cherry": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": ["June", "July"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Chicken Breast": {
+    "category": "Fresh Foods",
+    "sub_category": "Meat",
+    "shelf_life_days": 3,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Chips": {
+    "category": "Pantry",
+    "sub_category": "Snacks",
+    "shelf_life_days": 90,
+    "maximum_days_on_sale": 30,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Chocolate Bar": {
+    "category": "Pantry",
+    "sub_category": "Snacks",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Chocolate Biscuit": {
+    "category": "Pantry",
+    "sub_category": "Snacks",
+    "shelf_life_days": 90,
+    "maximum_days_on_sale": 30,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Coconut Oil": {
+    "category": "Pantry",
+    "sub_category": "Oils & Vinegars",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Coconut Sugar": {
+    "category": "Pantry",
+    "sub_category": "Baking Supplies",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Cod": {
+    "category": "Fresh Foods",
+    "sub_category": "Seafood",
+    "shelf_life_days": 2,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Cookies": {
+    "category": "Pantry",
+    "sub_category": "Snacks",
+    "shelf_life_days": 60,
+    "maximum_days_on_sale": 20,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Corn Oil": {
+    "category": "Pantry",
+    "sub_category": "Oils & Vinegars",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Cottage Cheese": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 10,
+    "maximum_days_on_sale": 3,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Crackers": {
+    "category": "Pantry",
+    "sub_category": "Snacks",
+    "shelf_life_days": 90,
+    "maximum_days_on_sale": 30,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Cream": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Croissant": {
+    "category": "Bakery",
+    "sub_category": "Pastries",
+    "shelf_life_days": 3,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Cucumber": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": ["May", "June", "July", "August"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Digestive Biscuit": {
+    "category": "Pantry",
+    "sub_category": "Snacks",
+    "shelf_life_days": 90,
+    "maximum_days_on_sale": 30,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Dijon Mustard": {
+    "category": "Pantry",
+    "sub_category": "Condiments",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Dried Apricots": {
+    "category": "Pantry",
+    "sub_category": "Dried Fruits",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Dried Cranberries": {
+    "category": "Pantry",
+    "sub_category": "Dried Fruits",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Egg (Chicken)": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Eggs",
+    "shelf_life_days": 28,
+    "maximum_days_on_sale": 14,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Egg (Duck)": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Eggs",
+    "shelf_life_days": 28,
+    "maximum_days_on_sale": 14,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Egg (Goose)": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Eggs",
+    "shelf_life_days": 28,
+    "maximum_days_on_sale": 14,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Egg (Quail)": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Eggs",
+    "shelf_life_days": 28,
+    "maximum_days_on_sale": 14,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Egg (Turkey)": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Eggs",
+    "shelf_life_days": 28,
+    "maximum_days_on_sale": 14,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Eggs": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Eggs",
+    "shelf_life_days": 28,
+    "maximum_days_on_sale": 14,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Evaporated Milk": {
+    "category": "Pantry",
+    "sub_category": "Canned Goods",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Feta Cheese": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 21,
+    "maximum_days_on_sale": 7,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Frozen Berries": {
+    "category": "Frozen Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 270,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Frozen",
+    "unit_of_measurement": "lb"
+  },
+  "Frozen Chicken Breast": {
+    "category": "Frozen Foods",
+    "sub_category": "Meat",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Frozen",
+    "unit_of_measurement": "lb"
+  },
+  "Frozen Ground Beef": {
+    "category": "Frozen Foods",
+    "sub_category": "Meat",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Frozen",
+    "unit_of_measurement": "lb"
+  },
+  "Frozen Peas": {
+    "category": "Frozen Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 270,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Frozen",
+    "unit_of_measurement": "lb"
+  },
+  "Frozen Salmon Fillet": {
+    "category": "Frozen Foods",
+    "sub_category": "Seafood",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Frozen",
+    "unit_of_measurement": "lb"
+  },
+  "Frozen Shrimp": {
+    "category": "Frozen Foods",
+    "sub_category": "Seafood",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Frozen",
+    "unit_of_measurement": "lb"
+  },
+  "Garlic": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 90,
+    "maximum_days_on_sale": 30,
+    "seasonality": ["July", "August", "September"],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Gouda Cheese": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 21,
+    "maximum_days_on_sale": 7,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Granola Bars": {
+    "category": "Pantry",
+    "sub_category": "Snacks",
+    "shelf_life_days": 90,
+    "maximum_days_on_sale": 30,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Grape Jelly": {
+    "category": "Pantry",
+    "sub_category": "Condiments",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Grapes": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": ["August", "September", "October"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Greek Yogurt": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 14,
+    "maximum_days_on_sale": 5,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Green Beans": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": ["June", "July", "August", "September"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Green Coffee": {
+    "category": "Beverages",
+    "sub_category": "Coffee",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Green Tea": {
+    "category": "Beverages",
+    "sub_category": "Tea",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Green Tea Bags": {
+    "category": "Beverages",
+    "sub_category": "Tea",
+    "shelf_life_days": 540,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Ground Beef": {
+    "category": "Fresh Foods",
+    "sub_category": "Meat",
+    "shelf_life_days": 3,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Ground Black Pepper": {
+    "category": "Pantry",
+    "sub_category": "Spices",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Ground Coffee": {
+    "category": "Beverages",
+    "sub_category": "Coffee",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Ground Coffee Decaf": {
+    "category": "Beverages",
+    "sub_category": "Coffee",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Ground Pork": {
+    "category": "Fresh Foods",
+    "sub_category": "Meat",
+    "shelf_life_days": 3,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Haddock": {
+    "category": "Fresh Foods",
+    "sub_category": "Seafood",
+    "shelf_life_days": 2,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Halibut": {
+    "category": "Fresh Foods",
+    "sub_category": "Seafood",
+    "shelf_life_days": 2,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Heavy Cream": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Herbal Tea": {
+    "category": "Beverages",
+    "sub_category": "Tea",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Honey": {
+    "category": "Pantry",
+    "sub_category": "Sweeteners",
+    "shelf_life_days": 1825,
+    "maximum_days_on_sale": 365,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Hot Sauce": {
+    "category": "Pantry",
+    "sub_category": "Condiments",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Ice Cream": {
+    "category": "Frozen Foods",
+    "sub_category": "Desserts",
+    "shelf_life_days": 90,
+    "maximum_days_on_sale": 30,
+    "seasonality": [],
+    "storage_recommendation": "Frozen",
+    "unit_of_measurement": "unit"
+  },
+  "Jasmine Rice": {
+    "category": "Pantry",
+    "sub_category": "Grains & Rice",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Kale": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Ketchup": {
+    "category": "Pantry",
+    "sub_category": "Condiments",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Kiwi": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 14,
+    "maximum_days_on_sale": 7,
+    "seasonality": ["November", "December", "January", "February", "March", "April", "May"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Lemon": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 21,
+    "maximum_days_on_sale": 7,
+    "seasonality": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Lettuce": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Lime": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 21,
+    "maximum_days_on_sale": 7,
+    "seasonality": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Loaf of Bread": {
+    "category": "Bakery",
+    "sub_category": "Bread",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Long Grain Rice": {
+    "category": "Pantry",
+    "sub_category": "Grains & Rice",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Mackerel": {
+    "category": "Fresh Foods",
+    "sub_category": "Seafood",
+    "shelf_life_days": 2,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Mango": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": ["May", "June", "July", "August"],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Maple Syrup": {
+    "category": "Pantry",
+    "sub_category": "Sweeteners",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Mayonnaise": {
+    "category": "Pantry",
+    "sub_category": "Condiments",
+    "shelf_life_days": 90,
+    "maximum_days_on_sale": 30,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Milk": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Mozzarella Cheese": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 14,
+    "maximum_days_on_sale": 5,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Mushrooms": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Mustard": {
+    "category": "Pantry",
+    "sub_category": "Condiments",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Oat Milk": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Plant-Based Milk",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Oatmeal": {
+    "category": "Pantry",
+    "sub_category": "Breakfast Foods",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Oatmeal Biscuit": {
+    "category": "Pantry",
+    "sub_category": "Snacks",
+    "shelf_life_days": 90,
+    "maximum_days_on_sale": 30,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Olive Oil": {
+    "category": "Pantry",
+    "sub_category": "Oils & Vinegars",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Onion": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 30,
+    "maximum_days_on_sale": 10,
+    "seasonality": ["August", "September", "October", "November"],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Orange": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 14,
+    "maximum_days_on_sale": 7,
+    "seasonality": ["December", "January", "February", "March", "April"],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Orange Juice": {
+    "category": "Beverages",
+    "sub_category": "Juices",
+    "shelf_life_days": 14,
+    "maximum_days_on_sale": 5,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Palm Oil": {
+    "category": "Pantry",
+    "sub_category": "Oils & Vinegars",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Pancake Mix": {
+    "category": "Pantry",
+    "sub_category": "Breakfast Foods",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Pancake Syrup": {
+    "category": "Pantry",
+    "sub_category": "Sweeteners",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Papaya": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": ["June", "July", "August", "September"],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Parmesan Cheese": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 30,
+    "maximum_days_on_sale": 10,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Pasta": {
+    "category": "Pantry",
+    "sub_category": "Grains & Rice",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Peach": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": ["June", "July", "August"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Peanut Butter": {
+    "category": "Pantry",
+    "sub_category": "Spreads",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Peanut Oil": {
+    "category": "Pantry",
+    "sub_category": "Oils & Vinegars",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Peas": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": ["April", "May", "June"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Plain Yogurt": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 14,
+    "maximum_days_on_sale": 5,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Plum": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": ["July", "August", "September"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Pomegranate": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 21,
+    "maximum_days_on_sale": 7,
+    "seasonality": ["September", "October", "November", "December"],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Popcorn Kernels": {
+    "category": "Pantry",
+    "sub_category": "Snacks",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Pork Chops": {
+    "category": "Fresh Foods",
+    "sub_category": "Meat",
+    "shelf_life_days": 3,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Potato": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 30,
+    "maximum_days_on_sale": 10,
+    "seasonality": ["August", "September", "October", "November"],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Powdered Sugar": {
+    "category": "Pantry",
+    "sub_category": "Baking Supplies",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Raw Sugar": {
+    "category": "Pantry",
+    "sub_category": "Baking Supplies",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Rice Flour": {
+    "category": "Pantry",
+    "sub_category": "Baking Supplies",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Ricotta Cheese": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Roast Beef": {
+    "category": "Fresh Foods",
+    "sub_category": "Meat",
+    "shelf_life_days": 3,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Robusta Coffee": {
+    "category": "Beverages",
+    "sub_category": "Coffee",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Rye Bread": {
+    "category": "Bakery",
+    "sub_category": "Bread",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Salmon": {
+    "category": "Fresh Foods",
+    "sub_category": "Seafood",
+    "shelf_life_days": 2,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Salmon Fillet": {
+    "category": "Fresh Foods",
+    "sub_category": "Seafood",
+    "shelf_life_days": 2,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Salt": {
+    "category": "Pantry",
+    "sub_category": "Spices",
+    "shelf_life_days": 1825,
+    "maximum_days_on_sale": 365,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Sardines": {
+    "category": "Fresh Foods",
+    "sub_category": "Seafood",
+    "shelf_life_days": 2,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Sausages": {
+    "category": "Fresh Foods",
+    "sub_category": "Meat",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Sesame Oil": {
+    "category": "Pantry",
+    "sub_category": "Oils & Vinegars",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Short Grain Rice": {
+    "category": "Pantry",
+    "sub_category": "Grains & Rice",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Shortbread Biscuit": {
+    "category": "Pantry",
+    "sub_category": "Snacks",
+    "shelf_life_days": 90,
+    "maximum_days_on_sale": 30,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Shrimp": {
+    "category": "Fresh Foods",
+    "sub_category": "Seafood",
+    "shelf_life_days": 2,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Smoked Ham": {
+    "category": "Fresh Foods",
+    "sub_category": "Meat",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Sour Cream": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 14,
+    "maximum_days_on_sale": 5,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Sourdough Bread": {
+    "category": "Bakery",
+    "sub_category": "Bread",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Soy Milk": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Plant-Based Milk",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Soy Sauce": {
+    "category": "Pantry",
+    "sub_category": "Condiments",
+    "shelf_life_days": 1095,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Spinach": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": ["April", "May", "June", "July", "August", "September"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Strawberries": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 4,
+    "maximum_days_on_sale": 2,
+    "seasonality": ["July", "August", "September", "October", "November"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Strawberry Jam": {
+    "category": "Pantry",
+    "sub_category": "Spreads",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Sugar": {
+    "category": "Pantry",
+    "sub_category": "Baking Supplies",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Sunflower Oil": {
+    "category": "Pantry",
+    "sub_category": "Oils & Vinegars",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Sweet Potato": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 21,
+    "maximum_days_on_sale": 7,
+    "seasonality": ["October", "November", "December"],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Swiss Cheese": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 21,
+    "maximum_days_on_sale": 7,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Tilapia": {
+    "category": "Fresh Foods",
+    "sub_category": "Seafood",
+    "shelf_life_days": 2,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Tofu": {
+    "category": "Fresh Foods",
+    "sub_category": "Plant-Based Proteins",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Tomato": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": ["June", "July", "August", "September"],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Trout": {
+    "category": "Fresh Foods",
+    "sub_category": "Seafood",
+    "shelf_life_days": 2,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Tuna": {
+    "category": "Fresh Foods",
+    "sub_category": "Seafood",
+    "shelf_life_days": 2,
+    "maximum_days_on_sale": 1,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Vegetable Oil": {
+    "category": "Pantry",
+    "sub_category": "Oils & Vinegars",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Walnuts": {
+    "category": "Pantry",
+    "sub_category": "Nuts & Seeds",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Watermelon": {
+    "category": "Fresh Foods",
+    "sub_category": "Fruits",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": ["June", "July", "August"],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Whipped Cream": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 14,
+    "maximum_days_on_sale": 5,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "White Bread": {
+    "category": "Bakery",
+    "sub_category": "Bread",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "White Flour": {
+    "category": "Pantry",
+    "sub_category": "Baking Supplies",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "White Rice": {
+    "category": "Pantry",
+    "sub_category": "Grains & Rice",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "White Sugar": {
+    "category": "Pantry",
+    "sub_category": "Baking Supplies",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "White Tea": {
+    "category": "Beverages",
+    "sub_category": "Tea",
+    "shelf_life_days": 365,
+    "maximum_days_on_sale": 90,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "White Vinegar": {
+    "category": "Pantry",
+    "sub_category": "Oils & Vinegars",
+    "shelf_life_days": 1825,
+    "maximum_days_on_sale": 365,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Whole Milk": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Whole Wheat Bread": {
+    "category": "Bakery",
+    "sub_category": "Bread",
+    "shelf_life_days": 5,
+    "maximum_days_on_sale": 2,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "unit"
+  },
+  "Whole Wheat Flour": {
+    "category": "Pantry",
+    "sub_category": "Baking Supplies",
+    "shelf_life_days": 180,
+    "maximum_days_on_sale": 60,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  },
+  "Wild Rice": {
+    "category": "Pantry",
+    "sub_category": "Grains & Rice",
+    "shelf_life_days": 730,
+    "maximum_days_on_sale": 180,
+    "seasonality": [],
+    "storage_recommendation": "Room Temperature",
+    "unit_of_measurement": "lb"
+  },
+  "Yogurt": {
+    "category": "Dairy & Alternatives",
+    "sub_category": "Dairy",
+    "shelf_life_days": 14,
+    "maximum_days_on_sale": 5,
+    "seasonality": [],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "unit"
+  },
+  "Zucchini": {
+    "category": "Fresh Foods",
+    "sub_category": "Vegetables",
+    "shelf_life_days": 7,
+    "maximum_days_on_sale": 3,
+    "seasonality": ["June", "July", "August", "September"],
+    "storage_recommendation": "Refrigerated",
+    "unit_of_measurement": "lb"
+  }
+}

@@ -1,0 +1,193 @@
+[
+  {
+    "subcategories": "Fruits",
+    "products": [
+      "Strawberries",
+      "Mango",
+      "Grapes",
+      "Apricot",
+      "Papaya",
+      "Banana",
+      "Peach",
+      "Plum",
+      "Kiwi",
+      "Orange",
+      "Lemon",
+      "Lime",
+      "Watermelon",
+      "Apple",
+      "Cherry",
+      "Pomegranate"
+    ]
+  },
+  {
+    "subcategories": "Vegetables",
+    "products": [
+      "Carrot",
+      "Bell Pepper",
+      "Mushrooms",
+      "Cucumber",
+      "Zucchini",
+      "Tomato",
+      "Onion",
+      "Garlic",
+      "Green Beans",
+      "Cauliflower",
+      "Sweet Potato",
+      "Potato",
+      "Peas",
+      "Asparagus"
+    ]
+  },
+  {
+    "subcategories": "Leafy Greens",
+    "products": [
+      "Spinach",
+      "Lettuce",
+      "Kale",
+      "Cabbage",
+      "Broccoli"
+    ]
+  },
+  {
+    "subcategories": "Fish",
+    "products": [
+      "Haddock",
+      "Halibut",
+      "Cod",
+      "Tuna",
+      "Sardines",
+      "Anchovies",
+      "Mackerel",
+      "Tilapia",
+      "Salmon",
+      "Trout"
+    ]
+  },
+  {
+    "subcategories": "Eggs",
+    "products": [
+      "Egg (Duck)",
+      "Egg (Chicken)",
+      "Egg (Goose)",
+      "Egg (Quail)",
+      "Egg (Turkey)"
+    ]
+  },
+  {
+    "subcategories": "Creams & Yogurts",
+    "products": [
+      "Heavy Cream",
+      "Cream",
+      "Whipped Cream",
+      "Greek Yogurt",
+      "Yogurt",
+      "Sour Cream"
+    ]
+  },
+  {
+    "subcategories": "Milk",
+    "products": [
+      "Milk",
+      "Buttermilk",
+      "Evaporated Milk"
+    ]
+  },
+  {
+    "subcategories": "Cheeses",
+    "products": [
+      "Feta Cheese",
+      "Mozzarella Cheese",
+      "Swiss Cheese",
+      "Parmesan Cheese",
+      "Ricotta Cheese",
+      "Cottage Cheese",
+      "Gouda Cheese",
+      "Cheese"
+    ]
+  },
+  {
+    "subcategories": "Butter",
+    "products": [
+      "Butter"
+    ]
+  },
+  {
+    "subcategories": "Biscuits",
+    "products": [
+      "Oatmeal Biscuit",
+      "Digestive Biscuit",
+      "Butter Biscuit"
+    ]
+  },
+  {
+    "subcategories": "Breads",
+    "products": [
+      "Rye Bread",
+      "Sourdough Bread",
+      "Whole Wheat Bread",
+      "White Bread"
+    ]
+  },
+  {
+    "subcategories": "Flours",
+    "products": [
+      "Whole Wheat Flour",
+      "All-Purpose Flour",
+      "Rice Flour",
+      "Almond Flour",
+      "Bread Flour"
+    ]
+  },
+  {
+    "subcategories": "Grains",
+    "products": [
+      "Brown Rice",
+      "Black Rice",
+      "Wild Rice",
+      "Jasmine Rice",
+      "Long Grain Rice",
+      "Short Grain Rice",
+      "Basmati Rice",
+      "White Rice",
+      "Arborio Rice"
+    ]
+  },
+  {
+    "subcategories": "Condiments",
+    "products": [
+      "White Sugar",
+      "Raw Sugar",
+      "Powdered Sugar",
+      "Coconut Sugar"
+    ]
+  },
+  {
+    "subcategories": "Oils",
+    "products": [
+      "Corn Oil",
+      "Peanut Oil",
+      "Palm Oil",
+      "Canola Oil",
+      "Sesame Oil",
+      "Sunflower Oil",
+      "Vegetable Oil",
+      "Olive Oil",
+      "Avocado Oil",
+      "Coconut Oil"
+    ]
+  },
+  {
+    "subcategories": "Coffees & Teas",
+    "products": [
+      "Arabica Coffee",
+      "Robusta Coffee",
+      "Herbal Tea",
+      "Green Tea",
+      "Black Coffee",
+      "White Tea",
+      "Black Tea",
+      "Green Coffee"
+    ]
+  }
+]

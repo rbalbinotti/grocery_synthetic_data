@@ -1,0 +1,257 @@
+{
+  "GreenFields Co.": {
+    "distance_km": 127,
+    "products": ["Spinach", "Lettuce", "Kale", "Cabbage", "Broccoli"],
+    "moq": 150
+  },
+  "DriesFields Co.": {
+    "distance_km": 980,
+    "products": ["Dried Apricots", "Dried Cranberries"],
+    "moq": 200
+  },
+  "ValleyFresh Farms": {
+    "distance_km": 85,
+    "products": ["Tomato", "Cucumber", "Bell Pepper", "Zucchini", "Carrot", "Celery"],
+    "moq": 100
+  },
+  "OrchardBest Fruits": {
+    "distance_km": 200,
+    "products": ["Apple", "Banana", "Orange", "Strawberries", "Grapes", "Peach", "Watermelon"],
+    "moq": 120
+  },
+  "Tropical Fruits Ltd.": {
+    "distance_km": 350,
+    "products": ["Mango", "Papaya", "Kiwi", "Pomegranate", "Avocado"],
+    "moq": 80
+  },
+  "BerryGood Farms": {
+    "distance_km": 180,
+    "products": ["Strawberries", "Blueberries", "Raspberries", "Blackberries"],
+    "moq": 60
+  },
+  "DairyPure Inc.": {
+    "distance_km": 50,
+    "products": ["Milk", "Cheese", "Butter", "Yogurt", "Cream", "Sour Cream", "Cottage Cheese"],
+    "moq": 80
+  },
+  "Artisan Cheesemakers": {
+    "distance_km": 95,
+    "products": ["Cheddar Cheese", "Mozzarella Cheese", "Feta Cheese", "Gouda Cheese", "Parmesan Cheese", "Swiss Cheese", "Ricotta Cheese"],
+    "moq": 40
+  },
+  "FreshEggs Co.": {
+    "distance_km": 65,
+    "products": ["Egg (Chicken)", "Egg (Duck)", "Egg (Quail)"],
+    "moq": 30
+  },
+  "MeatMasters": {
+    "distance_km": 75,
+    "products": ["Chicken Breast", "Ground Beef", "Pork Chops", "Sausages", "Roast Beef", "Smoked Ham"],
+    "moq": 60
+  },
+  "Premium Meats Inc.": {
+    "distance_km": 110,
+    "products": ["Ground Beef", "Ground Pork", "Pork Chops", "Roast Beef"],
+    "moq": 45
+  },
+  "OceanHarvest Seafood": {
+    "distance_km": 180,
+    "products": ["Salmon", "Tuna", "Cod", "Shrimp", "Tilapia", "Sardines", "Mackerel", "Haddock", "Halibut", "Trout"],
+    "moq": 40
+  },
+  "Coastal Catch": {
+    "distance_km": 220,
+    "products": ["Salmon", "Tuna", "Cod", "Shrimp"],
+    "moq": 25
+  },
+  "GrainWorld Distributors": {
+    "distance_km": 150,
+    "products": ["White Rice", "Brown Rice", "Basmati Rice", "Jasmine Rice", "Arborio Rice", "Wild Rice", "Black Rice"],
+    "moq": 200
+  },
+  "Pasta Paradise": {
+    "distance_km": 130,
+    "products": ["Pasta", "Spaghetti", "Penne", "Fettuccine"],
+    "moq": 100
+  },
+  "BakeWell Supplies": {
+    "distance_km": 90,
+    "products": ["Baking Powder", "Baking Soda", "All-Purpose Flour", "Bread Flour", "Whole Wheat Flour", "Rice Flour", "Almond Flour"],
+    "moq": 50
+  },
+  "Sugar & Spice Co.": {
+    "distance_km": 85,
+    "products": ["White Sugar", "Brown Sugar", "Powdered Sugar", "Raw Sugar", "Coconut Sugar", "Maple Syrup", "Honey"],
+    "moq": 70
+  },
+  "BeverageSource Co.": {
+    "distance_km": 110,
+    "products": ["Arabica Coffee", "Robusta Coffee", "Ground Coffee", "Ground Coffee Decaf", "Green Coffee"],
+    "moq": 70
+  },
+  "TeaTime Imports": {
+    "distance_km": 160,
+    "products": ["Black Tea", "Green Tea", "White Tea", "Herbal Tea", "Black Tea Bags", "Green Tea Bags", "Chamomile Tea Bags"],
+    "moq": 55
+  },
+  "JuiceBox Beverages": {
+    "distance_km": 95,
+    "products": ["Orange Juice", "Apple Juice", "Grape Juice"],
+    "moq": 40
+  },
+  "PantryEssentials Ltd.": {
+    "distance_km": 95,
+    "products": ["Canned Tomatoes", "Canned Beans", "Canned Corn", "Canned Green Beans", "Canned Peaches", "Canned Sardines", "Canned Tuna", "Canned Soup"],
+    "moq": 130
+  },
+  "Oil & Vinegar Co.": {
+    "distance_km": 120,
+    "products": ["Olive Oil", "Avocado Oil", "Coconut Oil", "Canola Oil", "Corn Oil", "Peanut Oil", "Sunflower Oil", "Sesame Oil", "Vegetable Oil", "White Vinegar"],
+    "moq": 80
+  },
+  "Condiment Masters": {
+    "distance_km": 75,
+    "products": ["Ketchup", "Mustard", "Mayonnaise", "Soy Sauce", "Hot Sauce", "Dijon Mustard"],
+    "moq": 60
+  },
+  "Spreadables Inc.": {
+    "distance_km": 88,
+    "products": ["Peanut Butter", "Strawberry Jam", "Grape Jelly", "Honey", "Maple Syrup", "Pancake Syrup"],
+    "moq": 45
+  },
+  "FrozenFoods Express": {
+    "distance_km": 65,
+    "products": ["Frozen Berries", "Frozen Chicken Breast", "Frozen Ground Beef", "Frozen Peas", "Frozen Salmon Fillet", "Frozen Shrimp"],
+    "moq": 90
+  },
+  "Ice Cream Dream": {
+    "distance_km": 70,
+    "products": ["Ice Cream", "Frozen Yogurt", "Sorbet"],
+    "moq": 35
+  },
+  "SnackTime Distributors": {
+    "distance_km": 80,
+    "products": ["Chips", "Cookies", "Crackers", "Granola Bars", "Popcorn Kernels"],
+    "moq": 110
+  },
+  "Biscuit Boutique": {
+    "distance_km": 92,
+    "products": ["Butter Biscuit", "Chocolate Biscuit", "Digestive Biscuit", "Oatmeal Biscuit", "Shortbread Biscuit"],
+    "moq": 65
+  },
+  "Chocolate Heaven": {
+    "distance_km": 140,
+    "products": ["Chocolate Bar", "Dark Chocolate", "Milk Chocolate", "White Chocolate"],
+    "moq": 40
+  },
+  "Bakery Fresh Co.": {
+    "distance_km": 45,
+    "products": ["Loaf of Bread", "White Bread", "Whole Wheat Bread", "Sourdough Bread", "Rye Bread", "Bagels", "Croissant"],
+    "moq": 75
+  },
+  "Morning Delights": {
+    "distance_km": 78,
+    "products": ["Pancake Mix", "Oatmeal", "Granola Bars", "Cereal"],
+    "moq": 50
+  },
+  "Nut & Seed Co.": {
+    "distance_km": 125,
+    "products": ["Walnuts", "Cashews", "Almonds", "Peanuts", "Sunflower Seeds"],
+    "moq": 55
+  },
+  "Plant-Based Alternatives": {
+    "distance_km": 105,
+    "products": ["Almond Milk", "Oat Milk", "Soy Milk", "Tofu"],
+    "moq": 60
+  },
+  "SpiceWorld Imports": {
+    "distance_km": 160,
+    "products": ["Salt", "Ground Black Pepper", "Garlic Powder", "Onion Powder"],
+    "moq": 30
+  },
+  "Fresh Garlic Co.": {
+    "distance_km": 82,
+    "products": ["Garlic"],
+    "moq": 20
+  },
+  "Onion Specialists": {
+    "distance_km": 79,
+    "products": ["Onion"],
+    "moq": 25
+  },
+  "Potato Producers": {
+    "distance_km": 68,
+    "products": ["Potato", "Sweet Potato"],
+    "moq": 100
+  },
+  "Mushroom Masters": {
+    "distance_km": 73,
+    "products": ["Mushrooms"],
+    "moq": 15
+  },
+  "Asparagus Experts": {
+    "distance_km": 115,
+    "products": ["Asparagus"],
+    "moq": 18
+  },
+  "Avocado Avenue": {
+    "distance_km": 280,
+    "products": ["Avocado"],
+    "moq": 30
+  },
+  "Lemon & Lime Co.": {
+    "distance_km": 190,
+    "products": ["Lemon", "Lime"],
+    "moq": 35
+  },
+  "BerryBest Farms": {
+    "distance_km": 175,
+    "products": ["Strawberries", "Blueberries"],
+    "moq": 40
+  },
+  "Tropical Delights": {
+    "distance_km": 320,
+    "products": ["Mango", "Pineapple", "Coconut"],
+    "moq": 45
+  },
+  "Stone Fruit Specialists": {
+    "distance_km": 165,
+    "products": ["Peach", "Apricot", "Plum", "Cherry"],
+    "moq": 38
+  },
+  "Seafood Select": {
+    "distance_km": 195,
+    "products": ["Salmon Fillet", "Tuna Steak", "Shrimp"],
+    "moq": 28
+  },
+  "Daily Dairy": {
+    "distance_km": 55,
+    "products": ["Milk", "Butter", "Egg (Chicken)"],
+    "moq": 85
+  },
+  "Organic Oasis": {
+    "distance_km": 120,
+    "products": ["Organic Spinach", "Organic Carrots", "Organic Apples", "Organic Milk"],
+    "moq": 55
+  },
+  "International Foods Inc.": {
+    "distance_km": 250,
+    "products": ["Basmati Rice", "Jasmine Rice", "Soy Sauce", "Sesame Oil"],
+    "moq": 70
+  },
+  "Local Farm Collective": {
+    "distance_km": 35,
+    "products": ["Tomato", "Cucumber", "Lettuce", "Bell Pepper", "Zucchini", "Carrot"],
+    "moq": 75
+  },
+  "Wholesale Warehouse": {
+    "distance_km": 25,
+    "products": ["White Rice", "Pasta", "Canned Tomatoes", "Canned Beans", "Flour", "Sugar", "Cooking Oil"],
+    "moq": 300
+  },
+  "Emergency Supplier": {
+    "distance_km": 15,
+    "products": ["Milk", "Bread", "Egg (Chicken)", "Butter", "Banana", "Apple"],
+    "moq": 10
+  }
+}
