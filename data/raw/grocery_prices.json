@@ -1,0 +1,716 @@
+{
+    "Produce": [
+        {
+            "item": "Strawberries",
+            "currency": "R$",
+            "price": 20.0,
+            "unit": "box (250g)"
+        },
+        {
+            "item": "Spinach",
+            "currency": "R$",
+            "price": 5.0,
+            "unit": "bunch"
+        },
+        {
+            "item": "Cabbage",
+            "currency": "R$",
+            "price": 4.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Mushrooms",
+            "currency": "R$",
+            "price": 35.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Cucumber",
+            "currency": "R$",
+            "price": 5.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Zucchini",
+            "currency": "R$",
+            "price": 4.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Mango",
+            "currency": "R$",
+            "price": 8.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Lemon",
+            "currency": "R$",
+            "price": 6.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Kiwi",
+            "currency": "R$",
+            "price": 15.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Orange",
+            "currency": "R$",
+            "price": 5.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Carrot",
+            "currency": "R$",
+            "price": 5.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Broccoli",
+            "currency": "R$",
+            "price": 8.0,
+            "unit": "unit"
+        },
+        {
+            "item": "Bell Pepper",
+            "currency": "R$",
+            "price": 15.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Potato",
+            "currency": "R$",
+            "price": 6.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Peas",
+            "currency": "R$",
+            "price": 12.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Lettuce",
+            "currency": "R$",
+            "price": 4.0,
+            "unit": "unit"
+        },
+        {
+            "item": "Coconut",
+            "currency": "R$",
+            "price": 6.0,
+            "unit": "unit"
+        },
+        {
+            "item": "Banana",
+            "currency": "R$",
+            "price": 7.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Pomegranate",
+            "currency": "R$",
+            "price": 25.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Peach",
+            "currency": "R$",
+            "price": 12.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Cauliflower",
+            "currency": "R$",
+            "price": 7.0,
+            "unit": "unit"
+        },
+        {
+            "item": "Watermelon",
+            "currency": "R$",
+            "price": 3.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Grapes",
+            "currency": "R$",
+            "price": 15.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Apricot",
+            "currency": "R$",
+            "price": 30.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Papaya",
+            "currency": "R$",
+            "price": 8.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Apple",
+            "currency": "R$",
+            "price": 9.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Tomato",
+            "currency": "R$",
+            "price": 8.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Sweet Potato",
+            "currency": "R$",
+            "price": 5.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Cherry",
+            "currency": "R$",
+            "price": 40.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Lime",
+            "currency": "R$",
+            "price": 5.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Kale",
+            "currency": "R$",
+            "price": 5.0,
+            "unit": "bunch"
+        },
+        {
+            "item": "Asparagus",
+            "currency": "R$",
+            "price": 100.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Green Beans",
+            "currency": "R$",
+            "price": 8.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Onion",
+            "currency": "R$",
+            "price": 6.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Garlic",
+            "currency": "R$",
+            "price": 40.0,
+            "unit": "kg"
+        }
+    ],
+    "Grains and Flours": [
+        {
+            "item": "Sushi Rice",
+            "currency": "R$",
+            "price": 25.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Black Rice",
+            "currency": "R$",
+            "price": 20.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Long Grain Rice",
+            "currency": "R$",
+            "price": 15.0,
+            "unit": "kg"
+        },
+        {
+            "item": "All-Purpose Flour",
+            "currency": "R$",
+            "price": 5.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Rye Bread",
+            "currency": "R$",
+            "price": 15.0,
+            "unit": "unit (500g)"
+        },
+        {
+            "item": "Bread Flour",
+            "currency": "R$",
+            "price": 8.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Sourdough Bread",
+            "currency": "R$",
+            "price": 20.0,
+            "unit": "unit"
+        },
+        {
+            "item": "Whole Wheat Flour",
+            "currency": "R$",
+            "price": 7.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Basmati Rice",
+            "currency": "R$",
+            "price": 40.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Brown Rice",
+            "currency": "R$",
+            "price": 12.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Jasmine Rice",
+            "currency": "R$",
+            "price": 20.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Rice Flour",
+            "currency": "R$",
+            "price": 10.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Wild Rice",
+            "currency": "R$",
+            "price": 60.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Short Grain Rice",
+            "currency": "R$",
+            "price": 15.0,
+            "unit": "kg"
+        },
+        {
+            "item": "White Rice",
+            "currency": "R$",
+            "price": 15.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Whole Wheat Bread",
+            "currency": "R$",
+            "price": 10.0,
+            "unit": "unit"
+        },
+        {
+            "item": "White Bread",
+            "currency": "R$",
+            "price": 8.0,
+            "unit": "unit"
+        },
+        {
+            "item": "Arborio Rice",
+            "currency": "R$",
+            "price": 30.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Multigrain Bread",
+            "currency": "R$",
+            "price": 12.0,
+            "unit": "unit"
+        },
+        {
+            "item": "Almond Flour",
+            "currency": "R$",
+            "price": 60.0,
+            "unit": "kg"
+        }
+    ],
+    "Dairy and Cold Cuts": [
+        {
+            "item": "Greek Yogurt",
+            "currency": "R$",
+            "price": 7.0,
+            "unit": "unit (150g)"
+        },
+        {
+            "item": "Feta Cheese",
+            "currency": "R$",
+            "price": 80.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Swiss Cheese",
+            "currency": "R$",
+            "price": 100.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Parmesan Cheese",
+            "currency": "R$",
+            "price": 150.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Ricotta Cheese",
+            "currency": "R$",
+            "price": 25.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Mozzarella Cheese",
+            "currency": "R$",
+            "price": 50.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Heavy Cream",
+            "currency": "R$",
+            "price": 15.0,
+            "unit": "carton (200g)"
+        },
+        {
+            "item": "Cream",
+            "currency": "R$",
+            "price": 10.0,
+            "unit": "carton (200g)"
+        },
+        {
+            "item": "Whipped Cream",
+            "currency": "R$",
+            "price": 20.0,
+            "unit": "can"
+        },
+        {
+            "item": "Cottage Cheese",
+            "currency": "R$",
+            "price": 30.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Milk",
+            "currency": "R$",
+            "price": 5.0,
+            "unit": "liter"
+        },
+        {
+            "item": "Gouda Cheese",
+            "currency": "R$",
+            "price": 90.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Buttermilk",
+            "currency": "R$",
+            "price": 8.0,
+            "unit": "liter"
+        },
+        {
+            "item": "Sour Cream",
+            "currency": "R$",
+            "price": 12.0,
+            "unit": "jar"
+        },
+        {
+            "item": "Yogurt",
+            "currency": "R$",
+            "price": 6.0,
+            "unit": "jar (1kg)"
+        },
+        {
+            "item": "Evaporated Milk",
+            "currency": "R$",
+            "price": 8.0,
+            "unit": "can"
+        },
+        {
+            "item": "Cheese",
+            "currency": "R$",
+            "price": 60.0,
+            "unit": "kg"
+        }
+    ],
+    "Beverages": [
+        {
+            "item": "Arabica Coffee",
+            "currency": "R$",
+            "price": 40.0,
+            "unit": "package (500g)"
+        },
+        {
+            "item": "Herbal Tea",
+            "currency": "R$",
+            "price": 10.0,
+            "unit": "box (10 sachets)"
+        },
+        {
+            "item": "Black Coffee",
+            "currency": "R$",
+            "price": 30.0,
+            "unit": "package (500g)"
+        },
+        {
+            "item": "Black Tea",
+            "currency": "R$",
+            "price": 15.0,
+            "unit": "box (20 sachets)"
+        },
+        {
+            "item": "White Tea",
+            "currency": "R$",
+            "price": 25.0,
+            "unit": "box (20 sachets)"
+        },
+        {
+            "item": "Green Tea",
+            "currency": "R$",
+            "price": 20.0,
+            "unit": "box (20 sachets)"
+        },
+        {
+            "item": "Green Coffee",
+            "currency": "R$",
+            "price": 50.0,
+            "unit": "package (500g)"
+        },
+        {
+            "item": "Robusta Coffee",
+            "currency": "R$",
+            "price": 25.0,
+            "unit": "package (500g)"
+        }
+    ],
+    "Eggs and Poultry": [
+        {
+            "item": "Goose Egg",
+            "currency": "R$",
+            "price": 15.0,
+            "unit": "unit"
+        },
+        {
+            "item": "Duck Egg",
+            "currency": "R$",
+            "price": 10.0,
+            "unit": "unit"
+        },
+        {
+            "item": "Quail Egg",
+            "currency": "R$",
+            "price": 8.0,
+            "unit": "box (12 eggs)"
+        },
+        {
+            "item": "Turkey Egg",
+            "currency": "R$",
+            "price": 12.0,
+            "unit": "unit"
+        },
+        {
+            "item": "Chicken Egg",
+            "currency": "R$",
+            "price": 18.0,
+            "unit": "dozen"
+        }
+    ],
+    "Meats and Fish": [
+        {
+            "item": "Trout",
+            "currency": "R$",
+            "price": 45.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Haddock",
+            "currency": "R$",
+            "price": 60.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Sardines",
+            "currency": "R$",
+            "price": 8.0,
+            "unit": "can"
+        },
+        {
+            "item": "Anchovies",
+            "currency": "R$",
+            "price": 10.0,
+            "unit": "can"
+        },
+        {
+            "item": "Mackerel",
+            "currency": "R$",
+            "price": 35.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Halibut",
+            "currency": "R$",
+            "price": 70.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Salmon",
+            "currency": "R$",
+            "price": 120.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Tilapia",
+            "currency": "R$",
+            "price": 55.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Cod",
+            "currency": "R$",
+            "price": 80.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Tuna",
+            "currency": "R$",
+            "price": 65.0,
+            "unit": "kg"
+        }
+    ],
+    "Oils and Fats": [
+        {
+            "item": "Corn Oil",
+            "currency": "R$",
+            "price": 10.0,
+            "unit": "liter"
+        },
+        {
+            "item": "Olive Oil",
+            "currency": "R$",
+            "price": 100.0,
+            "unit": "liter"
+        },
+        {
+            "item": "Peanut Oil",
+            "currency": "R$",
+            "price": 15.0,
+            "unit": "liter"
+        },
+        {
+            "item": "Palm Oil",
+            "currency": "R$",
+            "price": 12.0,
+            "unit": "liter"
+        },
+        {
+            "item": "Avocado Oil",
+            "currency": "R$",
+            "price": 50.0,
+            "unit": "liter"
+        },
+        {
+            "item": "Canola Oil",
+            "currency": "R$",
+            "price": 10.0,
+            "unit": "liter"
+        },
+        {
+            "item": "Sesame Oil",
+            "currency": "R$",
+            "price": 25.0,
+            "unit": "liter"
+        },
+        {
+            "item": "Sunflower Oil",
+            "currency": "R$",
+            "price": 10.0,
+            "unit": "liter"
+        },
+        {
+            "item": "Coconut Oil",
+            "currency": "R$",
+            "price": 30.0,
+            "unit": "jar (500ml)"
+        },
+        {
+            "item": "Vegetable Oil",
+            "currency": "R$",
+            "price": 8.0,
+            "unit": "liter"
+        },
+        {
+            "item": "Butter",
+            "currency": "R$",
+            "price": 40.0,
+            "unit": "kg"
+        }
+    ],
+    "Sugars and Sweets": [
+        {
+            "item": "White Sugar",
+            "currency": "R$",
+            "price": 5.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Raw Sugar",
+            "currency": "R$",
+            "price": 8.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Powdered Sugar",
+            "currency": "R$",
+            "price": 15.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Coconut Sugar",
+            "currency": "R$",
+            "price": 25.0,
+            "unit": "kg"
+        },
+        {
+            "item": "Plum",
+            "currency": "R$",
+            "price": 35.0,
+            "unit": "kg"
+        }
+    ],
+    "Miscellaneous and Biscuits": [
+        {
+            "item": "Oatmeal Biscuit",
+            "currency": "R$",
+            "price": 10.0,
+            "unit": "package"
+        },
+        {
+            "item": "Butter Biscuit",
+            "currency": "R$",
+            "price": 8.0,
+            "unit": "package"
+        },
+        {
+            "item": "Chocolate Biscuit",
+            "currency": "R$",
+            "price": 12.0,
+            "unit": "package"
+        },
+        {
+            "item": "Digestive Biscuit",
+            "currency": "R$",
+            "price": 15.0,
+            "unit": "package"
+        },
+        {
+            "item": "Vanilla Biscuit",
+            "currency": "R$",
+            "price": 9.0,
+            "unit": "package"
+        }
+    ]
+}
