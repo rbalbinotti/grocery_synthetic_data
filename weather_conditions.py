@@ -7,9 +7,10 @@ exogenous variables in time series forecasting models.
 
 Author: Roberto Rosário Balbinotti
 Created: 2025
-Version: 1.0
+Version: 1.1
 """
 
+import polars as pl
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -140,6 +141,101 @@ class WeatherConditions:
             condition = 'Unstable' if precipitation > 0 else 'Pleasant'
 
         return temperature, precipitation, condition
+
+
+
+class PolarsWeatherConditions:
+    """
+    Optimized version for Polars (Lazy and Eager) using native expressions.
+    """
+    def __init__(self, lf: pl.LazyFrame | pl.DataFrame):
+        # Ensure we work internally with LazyFrame for maximum optimization
+        self.lf = lf.lazy() if isinstance(lf, pl.DataFrame) else lf
+
+    def _classify_temperature(self) -> pl.Expr:
+        # Replace if/elif with pl.when().then().otherwise()
+        # which run natively and in parallel in Polars
+        col = pl.col("daily_average_temperature_c")
+        return (
+            pl.when(col < 5).then(pl.lit("Very Cold"))
+            .when(col <= 11).then(pl.lit("Cold"))
+            .when(col <= 17).then(pl.lit("Cool"))
+            .when(col <= 24).then(pl.lit("Mild to Temperate"))
+            .when(col <= 29).then(pl.lit("Warm"))
+            .when(col <= 35).then(pl.lit("Hot"))
+            .otherwise(pl.lit("Very Hot"))
+        )
+
+    def _classify_precipitation(self) -> pl.Expr:
+        col = pl.col("daily_total_precipitation_mm")
+        return (
+            pl.when(col == 0).then(pl.lit("No precipitation"))
+            .when(col < 2.5).then(pl.lit("Light Rain"))
+            .when(col < 10).then(pl.lit("Moderate Rain"))
+            .when(col < 50).then(pl.lit("Heavy Rain"))
+            .otherwise(pl.lit("Violent Rainfall"))
+        )
+
+    def _classify_wind(self) -> pl.Expr:
+        col = pl.col("daily_average_wind_speed_mps")
+        return (
+            pl.when(col <= 1.5).then(pl.lit("Calm / Light Breeze"))
+            .when(col <= 5.4).then(pl.lit("Gentle to Fresh Breeze"))
+            .when(col <= 10.7).then(pl.lit("Moderate to Strong Wind"))
+            .when(col <= 24.4).then(pl.lit("Very Strong Wind / Gale"))
+            .otherwise(pl.lit("Storm / Hurricane Force"))
+        )
+
+    def _classify_severity(self) -> pl.Expr:
+        avg_temp = pl.col('daily_average_temperature_c')
+        precipitation = pl.col('daily_total_precipitation_mm')
+        wind = pl.col('daily_average_wind_speed_mps')
+
+        # Create boolean masks using Polars logical operators (&, |)
+        temp_extreme = (avg_temp < -5) | (avg_temp > 40)
+        temp_intense = (avg_temp < 0) | (avg_temp > 30)
+        rain_severe = precipitation >= 10
+        rain_extreme = precipitation >= 50
+        wind_severe = wind >= 10.8
+        wind_extreme = wind >= 24.5
+
+        return (
+            pl.when(temp_extreme | (rain_extreme & wind_extreme)).then(pl.lit("Catastrophic"))
+            .when(temp_intense & (rain_extreme | wind_extreme)).then(pl.lit("Extreme"))
+            .when(temp_intense | rain_severe | wind_severe).then(pl.lit("Severe"))
+            .when(
+                (avg_temp < 10) | (avg_temp > 25) |
+                ((precipitation > 0) & (precipitation < 10)) |
+                ((wind > 1.5) & (wind <= 10.7))
+            ).then(pl.lit("Moderate"))
+            .otherwise(pl.lit("Normal"))
+        )
+
+    def classify_weather(self) -> pl.LazyFrame:
+        lf_temp = self.lf
+        
+        # Correction: Check if the average column already exists in the metadata structure
+        if "daily_average_temperature_c" not in lf_temp.columns:
+            lf_temp = lf_temp.with_columns(
+                ((pl.col("daily_maximum_temperature_c") + pl.col("daily_minimum_temperature_c")) / 2)
+                .alias("daily_average_temperature_c")
+            )
+
+        # Now that the column definitely exists in the plan, we can safely proceed:
+        return (
+            lf_temp
+            # 1. Add all new classifications in parallel
+            .with_columns([
+                self._classify_temperature().alias("temperature_classification"),
+                self._classify_precipitation().alias("precipitation_classification"),
+                self._classify_wind().alias("wind_classification"),
+            ])
+            # 2. Add severity based on the columns from the previous step
+            .with_columns(
+                self._classify_severity().alias("weather_severity")
+            )
+        )
+
 
 
 if __name__ == '__main__':

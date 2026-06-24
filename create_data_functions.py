@@ -25,7 +25,7 @@ Created: 2025
 Version: 1.0
 """
 
-
+import polars as pl
 import pandas as pd
 import numpy as np
 import ast
@@ -754,6 +754,57 @@ def day_classification(dates: pd.Series, country: str = 'BR') -> pd.Series:
             return 'Weekdays'
         
     return dates.apply(classify_single)
+
+
+def day_classification_lazy(df: pl.LazyFrame, col: str, country: str = "BR") -> pl.LazyFrame:
+    """
+    Classify days in a Polars LazyFrame column as 'Holiday', 'Saturday', 'Sunday', or 'Weekdays',
+    and add a boolean flag indicating weekends.
+
+    Parameters
+    ----------
+    df : pl.LazyFrame
+        Input Polars LazyFrame containing a datetime column.
+    col : str
+        Name of the datetime column to classify.
+    country : str, optional
+        Country code (ISO format) used to determine holidays. Default is "BR" (Brazil).
+
+    Returns
+    -------
+    pl.LazyFrame
+        A new LazyFrame with two additional columns:
+        - 'day_classification': labels each date as "Holiday", "Saturday", "Sunday", or "Weekdays".
+        - 'is_weekend': boolean flag, True if the day is Saturday or Sunday, False otherwise.
+    """
+
+    # Extract all unique years present in the datetime column
+    years = df.select(pl.col(col).dt.year().unique()).collect().to_series().to_list()
+
+    # Retrieve holidays for the specified country and years
+    country_holidays = holidays.country_holidays(country.upper(), years=years)
+
+    # Convert holiday dates into a list
+    holiday_dates = list(country_holidays.keys())
+
+    # Convert holiday dates into a Polars Series of type Date
+    holiday_dates_pl = pl.Series(holiday_dates).cast(pl.Date)
+
+    # Add classification column and weekend flag
+    return (df
+            .with_columns(
+                pl.when(pl.col(col).is_in(holiday_dates_pl)).then(pl.lit("Holiday"))   # Mark holidays
+                .when(pl.col(col).dt.weekday() == 5).then(pl.lit("Saturday"))         # Mark Saturdays
+                .when(pl.col(col).dt.weekday() == 6).then(pl.lit("Sunday"))           # Mark Sundays
+                .otherwise(pl.lit("Weekdays"))                                        # Default: Weekdays
+                .alias("day_classification")
+            )
+            .with_columns(
+                pl.col("day_classification")
+                .is_in(["Saturday", "Sunday"])                                        # Flag weekends
+                .alias("is_weekend")
+            )
+    )
 
 
 
