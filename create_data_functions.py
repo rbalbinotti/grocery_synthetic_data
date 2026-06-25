@@ -602,6 +602,127 @@ def simulate_sales_volume(df, random_state=None):
     # Apply simulation to each row
     return df.apply(calculate_sales_per_row, axis=1)
 
+def simulate_sales_volume_polars(
+        df: pl.DataFrame | pl.LazyFrame, 
+        base_sales_volume: dict = None,
+        turnover_multiplier: dict = None,
+        demand_boost: dict = None,
+        weather_multiplier: dict = None
+    ) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Simulate sales volume for product subcategories using multiple factors.
+
+    Parameters
+    ----------
+    df : pl.DataFrame | pl.LazyFrame
+        Input Polars DataFrame containing product information. 
+        Must include columns: 'sub_category', 'shelf_life_days', 'sales_demand',
+        'in_season', 'is_holiday', 'is_weekend', 'weather_severity'.
+    base_sales_volume : dict, optional
+        Dictionary mapping subcategories to their baseline sales volume.
+        Defaults to predefined values if not provided.
+    turnover_multiplier : dict, optional
+        Dictionary mapping subcategories to turnover multipliers.
+        Defaults to predefined values if not provided.
+    demand_boost : dict, optional
+        Dictionary mapping demand levels (e.g., 'High', 'Low') to multipliers.
+        Defaults to predefined values if not provided.
+    weather_multiplier : dict, optional
+        Dictionary mapping weather severity levels to multipliers.
+        Defaults to predefined values if not provided.
+
+    Returns
+    -------
+    pl.DataFrame | pl.LazyFrame
+        A Polars DataFrame with additional columns:
+        - 'base_volume': baseline sales volume per subcategory
+        - 'turnover_factor': adjusted turnover factor after applying multipliers
+        - 'sales_volume': final simulated sales volume (rounded, min=1)
+    """
+
+    # Default baseline sales volume per subcategory
+    if base_sales_volume is None:
+        base_sales_volume = {
+            'Baking Supplies': 10, 'Bread': 117, 'Breakfast Foods': 40, 'Canned Fish': 13, 'Canned Goods': 50,
+            'Coffee': 33, 'Condiments': 30, 'Dairy': 107, 'Desserts': 23, 'Dried Fruits': 10, 'Eggs': 93,
+            'Fruits': 167, 'Grains & Rice': 60, 'Juices': 53, 'Meat': 133, 'Nuts & Seeds': 13, 'Oils & Vinegars': 27,
+            'Pastries': 33, 'Plant-Based Milk': 17, 'Plant-Based Proteins': 8, 'Seafood': 10, 'Snacks': 83,
+            'Spices': 20, 'Spreads': 17, 'Sweeteners': 23, 'Tea': 20, 'Vegetables': 160
+        }
+
+    # Default turnover multipliers per subcategory
+    if turnover_multiplier is None:
+        turnover_multiplier = {
+            'Baking Supplies': 0.9, 'Bread': 2.5, 'Breakfast Foods': 1.7, 'Canned Fish': 0.9, 'Canned Goods': 1.5,
+            'Coffee': 1.7, 'Condiments': 1.3, 'Dairy': 2.4, 'Desserts': 1.1, 'Dried Fruits': 1.0, 'Eggs': 2.3,
+            'Fruits': 2.2, 'Grains & Rice': 1.5, 'Juices': 1.8, 'Meat': 2.1, 'Nuts & Seeds': 1.0, 'Oils & Vinegars': 1.2,
+            'Pastries': 1.6, 'Plant-Based Milk': 1.4, 'Plant-Based Proteins': 0.8, 'Seafood': 0.8, 'Snacks': 2.0,
+            'Spices': 1.2, 'Spreads': 1.1, 'Sweeteners': 1.2, 'Tea': 1.1, 'Vegetables': 2.2
+        }
+
+    # Default demand boost multipliers
+    if demand_boost is None:
+        demand_boost = {
+            'Very High': 1.8,
+            'High': 1.5,
+            'Normal': 1.0,
+            'Low': 0.6
+        }
+
+    # Default weather severity multipliers
+    if weather_multiplier is None:
+        weather_multiplier = {
+            'Catastrophic': 0.1,
+            'Extreme': 0.6,
+            'Severe': 0.8,
+            'Moderate': 0.95,
+            'Normal': 1.0
+        }
+
+    # Apply transformations step by step
+    return (
+        df.with_columns(
+            # Step 1: Assign baseline volume and initial turnover factor
+            base_volume = pl.col("sub_category").replace_strict(base_sales_volume, default=50),
+            turnover_factor = pl.col("sub_category").replace_strict(turnover_multiplier, default=1.0)
+        ).with_columns(
+            # Step 2: Apply multipliers (shelf life, demand, seasonality, holiday/weekend, weather)
+            turnover_factor = (
+                pl.col("turnover_factor")
+                # Shelf life effect
+                * pl.when(pl.col("shelf_life_days") <= 2).then(3.0)
+                 .when(pl.col("shelf_life_days") <= 3).then(2.5)
+                 .when(pl.col("shelf_life_days") <= 7).then(2.0)
+                 .otherwise(1.0)
+                # Demand effect
+                * pl.col("sales_demand").replace_strict(demand_boost, default=1.0)
+                # Seasonality effect
+                * pl.when(pl.col("in_season")).then(1.5).otherwise(1.0)
+                # Holiday/Weekend effect
+                * pl.when(pl.col("is_holiday")).then(1.6)
+                 .when(pl.col("is_weekend")).then(1.3)
+                 .otherwise(1.0)
+                # Weather effect
+                * pl.col("weather_severity").replace_strict(weather_multiplier, default=1.0)
+            )
+        ).with_columns(
+            # Step 3: Add random noise to simulate variability
+            sales_volume = (
+                pl.col("base_volume") 
+                + (pl.Series(np.random.normal(loc=0.0, scale=2.5, size=df.collect().height)) 
+                   * pl.col("turnover_factor")) 
+            )
+        ).with_columns(
+            # Step 4: Round values and enforce minimum of 0
+            sales_volume = (
+                pl.when(pl.col("sales_volume") < 1)
+                 .then(0)
+                 .otherwise(pl.col("sales_volume"))
+                 .round(0)
+                 .cast(pl.Int64)
+            )
+        )
+    )
 
 
 
@@ -708,6 +829,57 @@ def classify_grocery_demand(dates: pd.Series, country: str = 'BR') -> pd.Series:
     return dates.apply(classify_single)
 
 
+def classify_grocery_demand_polars(
+    df: pl.DataFrame | pl.LazyFrame, 
+    columns_date: str, 
+    country: str = 'BR'
+) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Classify grocery sales demand levels based on dates and holidays.
+
+    Parameters
+    ----------
+    df : pl.DataFrame or pl.LazyFrame
+        Input Polars DataFrame or LazyFrame containing grocery sales data.
+    columns_date : str
+        Name of the column containing date values.
+    country : str, optional
+        Country code (default is 'BR') used to determine national holidays.
+
+    Returns
+    -------
+    pl.DataFrame or pl.LazyFrame
+        Same type as input, with an additional column 'sales_demand'
+        categorizing demand as "Very High", "High", or "Normal".
+    """
+
+    # Detect if input is LazyFrame
+    is_lazy = isinstance(df, pl.LazyFrame)
+
+    # Get unique years (precisa coletar apenas esse resultado)
+    years = df.select(pl.col(columns_date).dt.year().unique()).collect()[columns_date]
+    
+    country_holidays = holidays.country_holidays(country.upper(), years=years)
+
+    # Define classification expression (Expr)
+    demand_expr = (
+        pl.when(pl.col(columns_date).is_in(country_holidays))
+        .then(pl.lit("Very High"))
+        .when(pl.col(columns_date).dt.day().is_between(1, 10))
+        .then(pl.lit("High"))
+        .when(pl.col(columns_date).dt.weekday() >= 6)  # Saturday = 6, Sunday = 7
+        .then(pl.lit("High"))
+        .otherwise(pl.lit("Normal"))
+        .alias("sales_demand")
+    )
+
+    # Apply expression
+    df = df.with_columns(demand_expr)
+
+    # Return in same format as input
+    return df.lazy() if is_lazy else df
+
+
 
 
 
@@ -758,24 +930,24 @@ def day_classification(dates: pd.Series, country: str = 'BR') -> pd.Series:
 
 def day_classification_lazy(df: pl.LazyFrame, col: str, country: str = "BR") -> pl.LazyFrame:
     """
-    Classify days in a Polars LazyFrame column as 'Holiday', 'Saturday', 'Sunday', or 'Weekdays',
-    and add a boolean flag indicating weekends.
+    Classify days in a datetime column as holidays, weekends, or weekdays.
 
     Parameters
     ----------
     df : pl.LazyFrame
-        Input Polars LazyFrame containing a datetime column.
+        A Polars LazyFrame containing a datetime column.
     col : str
-        Name of the datetime column to classify.
+        The name of the datetime column to classify.
     country : str, optional
-        Country code (ISO format) used to determine holidays. Default is "BR" (Brazil).
+        The country code (default is "BR") used to retrieve official holidays.
 
     Returns
     -------
     pl.LazyFrame
-        A new LazyFrame with two additional columns:
-        - 'day_classification': labels each date as "Holiday", "Saturday", "Sunday", or "Weekdays".
-        - 'is_weekend': boolean flag, True if the day is Saturday or Sunday, False otherwise.
+        The original LazyFrame with three additional columns:
+        - "is_holiday": Boolean flag indicating if the date is a holiday.
+        - "day_classification": String label ("Saturday", "Sunday", or "Weekday").
+        - "is_weekend": Boolean flag indicating if the date falls on a weekend.
     """
 
     # Extract all unique years present in the datetime column
@@ -790,21 +962,27 @@ def day_classification_lazy(df: pl.LazyFrame, col: str, country: str = "BR") -> 
     # Convert holiday dates into a Polars Series of type Date
     holiday_dates_pl = pl.Series(holiday_dates).cast(pl.Date)
 
-    # Add classification column and weekend flag
-    return (df
-            .with_columns(
-                pl.when(pl.col(col).is_in(holiday_dates_pl)).then(pl.lit("Holiday"))   # Mark holidays
-                .when(pl.col(col).dt.weekday() == 5).then(pl.lit("Saturday"))         # Mark Saturdays
-                .when(pl.col(col).dt.weekday() == 6).then(pl.lit("Sunday"))           # Mark Sundays
-                .otherwise(pl.lit("Weekdays"))                                        # Default: Weekdays
-                .alias("day_classification")
-            )
-            .with_columns(
-                pl.col("day_classification")
-                .is_in(["Saturday", "Sunday"])                                        # Flag weekends
-                .alias("is_weekend")
-            )
+    # Add classification columns: holiday flag, day type, and weekend flag
+    return (
+        df.with_columns(
+            # Flag if the date is a holiday
+            pl.col(col).is_in(holiday_dates_pl).alias("is_holiday")
+        )
+        .with_columns(
+            # Classify the day of the week
+            pl.when(pl.col(col).dt.weekday == 6).then(pl.lit("Saturday"))
+            .when(pl.col(col).dt.weekday == 7).then(pl.lit("Sunday"))
+            .otherwise(pl.lit("Weekday"))
+            .alias("day_classification")
+        )
+        .with_columns(
+            # Flag if the day is a weekend (Saturday or Sunday)
+            pl.col("day_classification")
+            .is_in(["Saturday", "Sunday"])
+            .alias("is_weekend")
+        )
     )
+
 
 
 
