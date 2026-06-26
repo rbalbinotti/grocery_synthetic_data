@@ -316,6 +316,94 @@ def estimate_delivery_days(row):
     return math.ceil(delivery_days)
 
 
+def estimate_delivery_days_polars(
+        df: pl.DataFrame | pl.LazyFrame,
+        col_dist: str = "distance_km",
+        col_weather: str = "weather_severity",
+        col_day_class: str = "day_classification",
+        weather_factor: dict = None,
+        day_adjustment: dict = None
+) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Estimate delivery days for each order based on distance, weather severity,
+    day classification, and random processing time. Column names can be customized.
+
+    Parameters
+    ----------
+    df : pl.DataFrame | pl.LazyFrame
+        Input Polars DataFrame or LazyFrame containing at least:
+        - distance column (default: "distance_km")
+        - weather severity column (default: "weather_severity")
+        - day classification column (default: "day_classification")
+
+    col_dist : str, optional
+        Name of the column representing delivery distance in kilometers.
+        Default is "distance_km".
+
+    col_weather : str, optional
+        Name of the column representing weather severity category.
+        Default is "weather_severity".
+
+    col_day_class : str, optional
+        Name of the column representing day classification.
+        Default is "day_classification".
+
+    weather_factor : dict, optional
+        Mapping of weather severity levels to multipliers.
+        Default: {"Normal": 1.0, "Moderate": 1.15, "Severe": 1.3}
+
+    day_adjustment : dict, optional
+        Mapping of day classifications to additional delay in days.
+        Default: {"Weekdays": 0.0, "Saturday": 0.5, "Sunday": 1.0, "Holiday": 1.5}
+
+    Returns
+    -------
+    pl.DataFrame | pl.LazyFrame
+        Original DataFrame with an additional column:
+        - 'delivery_days': estimated delivery time in days (UInt16)
+    """
+
+    # Determine number of rows depending on DataFrame type
+    if isinstance(df, pl.LazyFrame):
+        length = df.collect().height
+    else:
+        length = df.height
+
+    # Weather impact multiplier (default values if not provided)
+    weather_factor = weather_factor or {"Normal": 1.0, "Moderate": 1.15, "Severe": 1.3}
+
+    # Additional delay based on day classification (default values if not provided)
+    day_adjustment = day_adjustment or {"Weekdays": 0.0, "Saturday": 0.5, "Sunday": 1.0, "Holiday": 1.5}
+
+    # Simulated processing time (e.g., picking, packing, dispatch)
+    processing_days = np.random.uniform(1.0, 2.0, length)
+
+    return (
+        df.with_columns(
+            (
+                # Base random factor depending on distance ranges
+                pl.when(pl.col(col_dist) <= 50).then(pl.lit(np.random.uniform(0.5, 1.5, length)))
+                .when(pl.col(col_dist) <= 150).then(pl.lit(np.random.uniform(1.0, 2.5, length)))
+                .when(pl.col(col_dist) <= 400).then(pl.lit(np.random.uniform(2.0, 4.0, length)))
+                .when(pl.col(col_dist) <= 1000).then(pl.lit(np.random.uniform(4.0, 8.0, length)))
+                .otherwise(pl.lit(np.random.uniform(7.0, 15.0, length)))
+                .alias("random_factor")
+
+                # Apply weather severity multiplier
+                * pl.col(col_weather).replace_strict(weather_factor, default=1.0).alias("weather_factor")
+
+                # Add day classification adjustment
+                + pl.col(col_day_class).replace_strict(day_adjustment, default=0.0).alias("day_adjustment")
+
+                # Add processing time
+                + pl.lit(processing_days)
+            )
+            # Round up to nearest integer and cast to unsigned integer
+            .ceil().cast(pl.UInt16).alias("delivery_days")
+        )
+    )
+
+
 
 def create_min_max_stock(
     df: pd.DataFrame,
@@ -379,6 +467,69 @@ def create_min_max_stock(
     df['reorder_point'] = np.maximum(min_stock + 1, np.minimum(reorder_point, max_stock - 1))
 
     return df
+
+def min_max_stock_polars(df: pl.DataFrame | pl.LazyFrame) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Calculate minimum and maximum stock levels for products based on supplier performance
+    and sales data.
+
+    Parameters
+    ----------
+    df : pl.DataFrame | pl.LazyFrame
+        Input Polars DataFrame or LazyFrame containing at least the following columns:
+        - supplier_id
+        - product_id
+        - sales_volume
+        - delivery_days
+        - supplier_rating
+        - moq (minimum order quantity)
+
+    Returns
+    -------
+    pl.DataFrame | pl.LazyFrame
+        A DataFrame/LazyFrame with additional columns:
+        - min_stock : Estimated minimum stock based on average sales volume and delivery days
+        - max_stock : Estimated maximum stock based on min_stock and MOQ
+    """
+
+    return (
+        df.with_columns([
+            # Minimum stock is calculated as the mean sales volume per supplier/product
+            # multiplied by delivery days. Casted to Int16 for compact storage.
+            (pl.col("sales_volume").mean().over(["supplier_id", "product_id"]) 
+             * pl.col("delivery_days")).cast(pl.Int16).alias("min_stock"),
+
+            # Safety stock depends on supplier rating:
+            # - Rating >= 4: higher multiplier (1.2) for more conservative buffer
+            # - Rating >= 2: moderate multiplier (1.1)
+            # - Otherwise: base calculation without extra multiplier
+            pl.when(pl.col("supplier_rating") >= 4)
+            .then(
+                pl.col("sales_volume").std().over(["supplier_id", "product_id"])
+                * pl.col("delivery_days").sqrt()
+                * 1.65
+                * 1.2
+            )
+            .when(pl.col("supplier_rating") >= 2)
+            .then(
+                pl.col("sales_volume").std().over(["supplier_id", "product_id"])
+                * pl.col("delivery_days").sqrt()
+                * 1.65
+                * 1.1
+            )
+            .otherwise(
+                pl.col("sales_volume").std().over(["supplier_id", "product_id"])
+                * pl.col("delivery_days").sqrt()
+                * 1.65
+            ).alias("stock_safety")
+        ])
+        .with_columns([
+            # Maximum stock is calculated as the mean of min_stock per supplier/product
+            # plus the minimum order quantity (MOQ). Casted to Int16.
+            (pl.col("min_stock").mean().over(["supplier_id", "product_id"])
+             + pl.col("moq")).cast(pl.Int16).alias("max_stock")
+        ])
+    ).drop("stock_safety")  # Drop intermediate safety stock column (not needed in final output)
 
 
 
@@ -602,6 +753,8 @@ def simulate_sales_volume(df, random_state=None):
     # Apply simulation to each row
     return df.apply(calculate_sales_per_row, axis=1)
 
+
+
 def simulate_sales_volume_polars(
         df: pl.DataFrame | pl.LazyFrame, 
         base_sales_volume: dict = None,
@@ -634,9 +787,7 @@ def simulate_sales_volume_polars(
     Returns
     -------
     pl.DataFrame | pl.LazyFrame
-        A Polars DataFrame with additional columns:
-        - 'base_volume': baseline sales volume per subcategory
-        - 'turnover_factor': adjusted turnover factor after applying multipliers
+        A Polars DataFrame with additional column:
         - 'sales_volume': final simulated sales volume (rounded, min=1)
     """
 
@@ -722,7 +873,7 @@ def simulate_sales_volume_polars(
                  .cast(pl.Int64)
             )
         )
-    )
+    ).drop(["base_volume", "turnover_factor"])
 
 
 
@@ -928,7 +1079,7 @@ def day_classification(dates: pd.Series, country: str = 'BR') -> pd.Series:
     return dates.apply(classify_single)
 
 
-def day_classification_lazy(df: pl.LazyFrame, col: str, country: str = "BR") -> pl.LazyFrame:
+def day_classification_lazy(df: pl.DataFrame | pl.LazyFrame, col: str, country: str = "BR") -> pl.DataFrame | pl.LazyFrame:
     """
     Classify days in a datetime column as holidays, weekends, or weekdays.
 
@@ -1002,7 +1153,7 @@ def create_stock_distribution_vectorized(stock_min, stock_max, seed: int=None,
         Series of maximum stock quantities for each item.
     seed : int, optional
         Seed for the random number generator to ensure reproducibility.
-    prob_stock : list of float, optional
+    prob_stock : list of float, optionalpl.DataFrame | pl.LazyFrame
         Probabilities for each stock condition: ['out', 'over', 'normal'] respectively.
         Default is [0.12, 0.28, 0.60].
     prob_extreme : list of float, optional
