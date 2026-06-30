@@ -468,69 +468,72 @@ def create_min_max_stock(
 
     return df
 
+
+
 def min_max_stock_polars(df: pl.DataFrame | pl.LazyFrame) -> pl.DataFrame | pl.LazyFrame:
     """
-    Calculate minimum and maximum stock levels for products based on supplier performance
-    and sales data.
+    Calculate minimum and maximum stock levels for products based on supplier performance 
+    and sales volatility.
+
+    This function derives inventory thresholds by grouping data by supplier and product.
+    It calculates the minimum stock using maximum lead times and determines the maximum 
+    stock by adding the Minimum Order Quantity (MOQ) to the calculated minimum.
 
     Parameters
     ----------
     df : pl.DataFrame | pl.LazyFrame
-        Input Polars DataFrame or LazyFrame containing at least the following columns:
-        - supplier_id
-        - product_id
-        - sales_volume
-        - delivery_days
-        - supplier_rating
-        - moq (minimum order quantity)
+        Input data containing the following columns:
+        - supplier_id: Unique identifier for the supplier.
+        - product_id: Unique identifier for the product.
+        - sales_volume: Historical units sold.
+        - delivery_days: Lead time in days.
+        - supplier_rating: Numerical rating (1-5) used for safety stock adjustment.
+        - moq: Minimum Order Quantity defined by the supplier.
 
     Returns
     -------
     pl.DataFrame | pl.LazyFrame
-        A DataFrame/LazyFrame with additional columns:
-        - min_stock : Estimated minimum stock based on average sales volume and delivery days
-        - max_stock : Estimated maximum stock based on min_stock and MOQ
+        The original dataframe augmented with two new columns:
+        - min_stock (Int32): The reorder point (Mean sales * Maximum lead time).
+        - max_stock (Int32): The maximum target inventory level (min_stock + moq).
     """
+    
+    # Grouping keys used for window functions to ensure consistency across the same product/supplier
+    partition = ["supplier_id", "product_id"]
 
     return (
         df.with_columns([
-            # Minimum stock is calculated as the mean sales volume per supplier/product
-            # multiplied by delivery days. Casted to Int16 for compact storage.
-            (pl.col("sales_volume").mean().over(["supplier_id", "product_id"]) 
-             * pl.col("delivery_days")).cast(pl.Int16).alias("min_stock"),
+            # Calculate Min Stock: Product of maximum demand and maximum lead time.
+            # Cast to Int32 to prevent overflow for large inventory counts.
+            (
+                pl.col("sales_volume").mean().over(partition) * pl.col("delivery_days").max().over(partition)
+            ).cast(pl.Int32).alias("min_stock"),
 
-            # Safety stock depends on supplier rating:
-            # - Rating >= 4: higher multiplier (1.2) for more conservative buffer
-            # - Rating >= 2: moderate multiplier (1.1)
-            # - Otherwise: base calculation without extra multiplier
+            # Calculate Safety Stock: Uses a service factor (1.65 for ~95% service level) 
+            # and applies a multiplier based on supplier reliability/rating.
             pl.when(pl.col("supplier_rating") >= 4)
             .then(
-                pl.col("sales_volume").std().over(["supplier_id", "product_id"])
-                * pl.col("delivery_days").sqrt()
-                * 1.65
-                * 1.2
+                pl.col("sales_volume").std().over(partition)
+                * pl.col("delivery_days").max().over(partition).sqrt()
+                * 1.65 * 1.2
             )
             .when(pl.col("supplier_rating") >= 2)
             .then(
-                pl.col("sales_volume").std().over(["supplier_id", "product_id"])
-                * pl.col("delivery_days").sqrt()
-                * 1.65
-                * 1.1
+                pl.col("sales_volume").std().over(partition)
+                * pl.col("delivery_days").max().over(partition).sqrt()
+                * 1.65 * 1.1
             )
             .otherwise(
-                pl.col("sales_volume").std().over(["supplier_id", "product_id"])
-                * pl.col("delivery_days").sqrt()
+                pl.col("sales_volume").std().over(partition)
+                * pl.col("delivery_days").max().over(partition).sqrt()
                 * 1.65
             ).alias("stock_safety")
         ])
         .with_columns([
-            # Maximum stock is calculated as the mean of min_stock per supplier/product
-            # plus the minimum order quantity (MOQ). Casted to Int16.
-            (pl.col("min_stock").mean().over(["supplier_id", "product_id"])
-             + pl.col("moq")).cast(pl.Int16).alias("max_stock")
+            # Calculate Max Stock: Defined as the reorder point plus the Minimum Order Quantity.
+            (pl.col("min_stock") + pl.col("moq")).cast(pl.Int32).alias("max_stock")
         ])
-    ).drop("stock_safety")  # Drop intermediate safety stock column (not needed in final output)
-
+    ).drop("stock_safety") # Remove intermediate calculation column before returning
 
 
 def simulate_purchase_order_columns(df, random_state=None):
@@ -1218,6 +1221,83 @@ def create_stock_distribution_vectorized(stock_min, stock_max, seed: int=None,
             results[i] = int(np.floor(stock_min.iloc[i] * divider))
 
     return results
+
+
+def create_stock_distribution_polars(df: pl.DataFrame | pl.LazyFrame,
+                                     min_stock: str = "min_stock",
+                                     max_stock: str = "max_stock",
+                                     prob_stock: list = [0.11, 0.25, 0.60, 0.04],
+                                     stock_conditions: list = ['out', 'over', 'normal', 'extreme'],
+                                     seed: int = None
+                                     ) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Generate a stock distribution simulation using Polars DataFrame or LazyFrame.
+
+    Parameters
+    ----------
+    df : pl.DataFrame | pl.LazyFrame
+        Input Polars DataFrame or LazyFrame containing stock columns.
+    min_stock : str, default="min_stock"
+        Column name representing the minimum stock value.
+    max_stock : str, default="max_stock"
+        Column name representing the maximum stock value.
+    prob_stock : list, default=[0.11, 0.25, 0.60, 0.04]
+        Probability distribution for each stock condition.
+        Must align with `stock_conditions` order.
+    stock_conditions : list, default=['out', 'over', 'normal', 'extreme']
+        Possible stock condition categories.
+    seed : int, optional
+        Random seed for reproducibility.
+
+    Returns
+    -------
+    pl.DataFrame | pl.LazyFrame
+        Original DataFrame with additional columns:
+        - "condition": chosen stock condition
+        - "extreme_condition": random extreme multiplier
+        - "randon_factor": random float between 0 and 1
+        - "stock_quantity": simulated stock quantity based on condition
+    """
+
+    # Initialize random number generator with optional seed
+    rng = np.random.default_rng(seed=seed)
+
+    # Get the number of rows in the DataFrame
+    length = df.collect().height
+
+    # Randomly assign conditions based on given probabilities
+    conditions = rng.choice(stock_conditions, size=length, p=prob_stock)
+
+    # Generate extreme condition multipliers (always >= 1.0)
+    extreme_conditions = abs(rng.normal(scale=1.08, size=length)) + 1.0
+
+    # Generate random factors between 0 and 1
+    randon_factor = rng.random(length)
+
+    # Add new columns and compute stock_quantity based on condition rules
+    return (
+        df.with_columns(
+            pl.Series("condition", conditions),
+            pl.Series("extreme_condition", extreme_conditions),
+            pl.Series("randon_factor", randon_factor)
+        )
+        .with_columns(
+            pl.when(pl.col("condition") == "out")
+            .then(0)  # No stock available
+            .when(pl.col("condition") == "over")
+            .then(pl.col(max_stock) * (pl.col("extreme_condition")))  # Overstock scenario
+            .when(pl.col("condition") == "extreme")
+            .then(pl.col(max_stock) * (pl.col("extreme_condition") + 0.8))  # Extreme overstock
+            .when(pl.col("condition") == "normal")
+            .then(pl.col(min_stock)
+                  + (pl.col(max_stock) - pl.col(min_stock))
+                  * pl.col("randon_factor"))  # Normal distribution between min and max
+            .otherwise(pl.col(min_stock))  # Fallback to minimum stock
+            .cast(pl.Int16)        
+            .alias("stock_quantity")
+        )
+    ).drop(["condition", "extreme_condition", "randon_factor"])
+
 
 
 
