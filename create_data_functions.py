@@ -33,8 +33,293 @@ import holidays
 import math
 import importlib
 
+from scipy.stats import truncnorm
 from workalendar.america import Brazil
 from sklearn.base import BaseEstimator, TransformerMixin
+
+def estimate_delivery_polars(
+        df: pl.DataFrame | pl.LazyFrame,
+        col_transit: str = "transit_time_decimal",
+        col_weather: str = "weather_severity",
+        col_day_class: str = "day_classification",
+        weather_factor: dict = None,
+        day_adjustment: dict = None,
+        daily_drive_limit: float = 8.0,
+        daily_constant_drive: float = 5.5,
+        pause_time: float = 0.5,
+        sleep_hours: float = 11.0,
+        week_max_hours: float = 144.0,
+        weekly_rest: float = 35.0
+) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Estimate delivery duration by simulating realistic driving and rest constraints.
+
+    The calculation accounts for:
+    - Daily driving limits and mandatory sleep cycles
+    - Short pauses during long driving days
+    - Weekly rest periods after exceeding weekly driving hours
+    - Weather severity multipliers (e.g., delays in bad weather)
+    - Day classification adjustments (weekdays, weekends, holidays)
+    - Randomized processing overhead (picking, packing, dispatch)
+
+    Parameters
+    ----------
+    df : pl.DataFrame | pl.LazyFrame
+        Input Polars DataFrame or LazyFrame containing transit data.
+    col_transit : str, default="transit_time_decimal"
+        Column name representing raw transit time in hours.
+    col_weather : str, default="weather_severity"
+        Column name representing weather severity classification.
+    col_day_class : str, default="day_classification"
+        Column name representing day classification (weekday, weekend, holiday).
+    weather_factor : dict, optional
+        Mapping of weather severity to time multipliers. Defaults to:
+        {"Normal": 1.0, "Moderate": 1.15, "Severe": 1.3}.
+    day_adjustment : dict, optional
+        Mapping of day classification to additional delay (hours). Defaults to:
+        {"Weekdays": 0.0, "Saturday": 0.5, "Sunday": 1.0, "Holiday": 1.5}.
+    daily_drive_limit : float, default=8.0
+        Maximum driving hours allowed per day before mandatory sleep.
+    daily_constant_drive : float, default=5.5
+        Driving hours before a short pause is required.
+    pause_time : float, default=0.5
+        Duration of each short pause in hours.
+    sleep_hours : float, default=11.0
+        Duration of mandatory sleep after exceeding daily drive limit.
+    week_max_hours : float, default=144.0
+        Maximum weekly driving hours before mandatory weekly rest.
+    weekly_rest : float, default=35.0
+        Duration of weekly rest in hours.
+
+    Returns
+    -------
+    pl.DataFrame | pl.LazyFrame
+        DataFrame with additional column:
+        - delivery_days : Final estimated delivery time in days.
+    """
+
+    # Determine number of rows depending on DataFrame type
+    if isinstance(df, pl.LazyFrame):
+        length = df.collect().height
+    else:
+        length = df.height
+
+    # Default weather multipliers
+    weather_factor = weather_factor or {"Normal": 1.0, "Moderate": 1.15, "Severe": 1.3}
+
+    # Default day adjustments
+    day_adjustment = day_adjustment or {"Weekdays": 0.0, "Saturday": 0.5, "Sunday": 1.0, "Holiday": 1.5}
+
+    # Random processing overhead (between 4 and 36 hours)
+    processing_hours = np.random.uniform(4.0, 36.0, length)
+
+    return (
+        df.with_columns([
+            # Number of full sleep cycles (11h each) based on daily driving limit
+            (pl.col(col_transit) // daily_drive_limit).alias("num_sleeps"),
+
+            # Remaining driving time after last full day
+            (pl.col(col_transit) % daily_drive_limit).alias("remainder_drive"),
+
+            # Number of weekly rests required
+            (pl.col(col_transit) // week_max_hours).alias("num_weekly_rests")
+        ])
+        .with_columns([
+            # Short pauses:
+            # - Each full 8h driving day guarantees one pause
+            # - Remaining driving time adds a pause if >= 5.5h
+            (
+                (pl.col("num_sleeps") * (daily_drive_limit // daily_constant_drive)) +
+                (pl.col("remainder_drive") // daily_constant_drive)
+            ).alias("num_pauses")
+        ])
+        .with_columns([
+            # Adjusted transit time including pauses, sleep, and weekly rests
+            (
+                pl.col(col_transit) +
+                (pl.col("num_pauses") * pl.lit(pause_time)) +
+                (pl.col("num_sleeps") * pl.lit(sleep_hours)) +
+                (pl.col("num_weekly_rests") * pl.lit(weekly_rest))
+            ).alias("transit_time")
+        ])
+        .with_columns([
+            # Final delivery time in days:
+            # - Apply weather multiplier
+            # - Add day classification adjustment
+            # - Add processing overhead
+            (
+                (pl.col("transit_time") * pl.col(col_weather).replace_strict(weather_factor, default=1.0))
+                + pl.col(col_day_class).replace_strict(day_adjustment, default=0.0)
+                + pl.lit(processing_hours)
+            ).alias("delivery_hours")
+        ])
+        .with_columns([
+            # Convert total hours to days
+            (pl.col("delivery_hours") / pl.lit(24)).alias("delivery_days")
+        ])
+        .drop("transit_time_decimal", "num_sleeps", "remainder_drive", "num_weekly_rests", "num_pauses", "delivery_hours")
+    )
+
+
+
+def simulate_distribution_speeds(
+    X: pl.DataFrame | pl.LazyFrame, 
+    seed=456,
+    # Urban Parameters
+    min_speed_urban=5,
+    max_speed_urban=60,
+    dp_urban=8,
+    # Off-Road Parameters
+    min_speed_off_road=10,
+    max_speed_off_road=80,
+    dp_off_road=12,
+    # Highway Parameters
+    min_speed_road=20,
+    max_speed_road=110,
+    dp_speed_road=18
+) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Simulates speed distributions for different road types (urban, off-road, highway)
+    and calculates the total transit time in minutes.
+
+    Parameters
+    ----------
+    X : pl.DataFrame | pl.LazyFrame
+        Input dataset containing distances (off_road_km, highway_km, urban_km).
+    seed : int, optional
+        Random seed for reproducibility (default=456).
+    min_speed_urban, max_speed_urban, dp_urban : float
+        Parameters for truncated normal distribution of urban speeds.
+    min_speed_off_road, max_speed_off_road, dp_off_road : float
+        Parameters for lognormal distribution of off-road speeds.
+    min_speed_road, max_speed_road, dp_speed_road : float
+        Parameters for lognormal distribution of highway speeds.
+
+    Returns
+    -------
+    pl.DataFrame | pl.LazyFrame
+        DataFrame with a new column `transit_time_minute` representing
+        the total travel time in minutes.
+    """
+
+    is_lazy = isinstance(X, pl.LazyFrame)
+    df = X.collect() if is_lazy else X
+    length = df.height
+    
+    rng = np.random.default_rng(seed=seed)
+        
+    # Automatic calculation of mean speeds based on provided parameters
+    mean_speed_urban = (max_speed_urban + min_speed_urban) / 2
+    mean_speed_off_road = (max_speed_off_road + min_speed_off_road) / 2
+    mean_speed_road = (max_speed_road + min_speed_road) / 2
+
+    # 1. Calculate sigma and mu for the lognormal distribution
+    sigma_off_road = np.sqrt(np.log(1 + (dp_off_road**2 / mean_speed_off_road**2)))
+    mu_off_road = np.log(mean_speed_off_road) - (sigma_off_road**2 / 2)
+
+    sigma_road = np.sqrt(np.log(1 + (dp_speed_road**2 / mean_speed_road**2)))
+    mu_road = np.log(mean_speed_road) - (sigma_road**2 / 2)
+
+    # 2. Generate arrays with simulated speeds
+    speed_off_road_arr = rng.lognormal(mean=mu_off_road, sigma=sigma_off_road, size=length)
+    speed_highway_arr = rng.lognormal(mean=mu_road, sigma=sigma_road, size=length)
+    speed_urban_arr = truncnorm.rvs(
+        (min_speed_urban - mean_speed_urban) / dp_urban, 
+        (max_speed_urban - mean_speed_urban) / dp_urban, 
+        loc=mean_speed_urban, 
+        scale=dp_urban, 
+        size=length, 
+        random_state=seed
+    )
+
+    # 3. Add new columns with simulated speeds
+    result_df = df.with_columns((
+       pl.Series("mean_speed_off_road", speed_off_road_arr),
+       pl.Series("mean_speed_highway", speed_highway_arr),
+       pl.Series("mean_speed_urban", speed_urban_arr))
+    )
+
+    # 4. Calculate total transit time in minutes
+    result_df = result_df.with_columns([
+        (
+            (pl.col("off_road_km") / pl.col("mean_speed_off_road"))
+            + (pl.col("highway_km") / pl.col("mean_speed_highway"))
+            + (pl.col("urban_km") / pl.col("mean_speed_urban"))
+        )
+        .alias("transit_time_decimal")  
+    ]).drop(["off_road_km", "highway_km", "urban_km", "mean_speed_off_road", "mean_speed_highway", "mean_speed_urban"])
+
+    return result_df.lazy() if is_lazy else result_df
+
+
+
+
+def road_simulation_polars(
+        df: pl.DataFrame | pl.LazyFrame,
+        distance: str = "distance_km",
+        subcategory: str = "sub_category",
+        category_off_road: tuple = ("Meat", "Seafood", "Vegetables", "Fruits", "Dairy", "Eggs", "Grains & Rice")
+) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Simulate road usage distribution (urban, highway, off-road) based on product categories and travel distance.
+
+    Parameters
+    ----------
+    df : pl.DataFrame | pl.LazyFrame
+        Input Polars DataFrame containing distance and category information.
+    distance : str, default="distance_km"
+        Column name representing the total travel distance in kilometers.
+    subcategory : str, default="sub_category"
+        Column name representing the product subcategory.
+    category_off_road : tuple, default=("Meat", "Seafood", "Vegetables", "Fruits", "Dairy", "Eggs", "Grains & Rice")
+        Tuple of product subcategories that require off-road travel.
+
+    Returns
+    -------
+    pl.DataFrame | pl.LazyFrame
+        DataFrame with three new columns:
+        - "off_road_km": estimated kilometers traveled off-road
+        - "highway_km": estimated kilometers traveled on highways
+        - "urban_km": estimated kilometers traveled in urban areas
+    """
+
+    # Generate a random factor between 0.1 and 0.4
+    random_values = np.random.uniform(0.1, 0.4, size=df.collect().height)
+
+
+    # Adjusted distance (subtracting 50 km to account for urban travel)
+    _distance = pl.col(distance) - 50
+
+    return (
+        df.with_columns(
+            pl.Series(random_values).alias("random_values")
+        )
+        .with_columns(
+            # Off-road travel applies only if the product is in the off-road category
+            # and total distance exceeds 50 km. Otherwise, set to 0.
+            pl.when((pl.col(subcategory).is_in(category_off_road)) & (pl.col(distance) > 50))
+            .then((_distance * pl.col("random_values")).cast(pl.Int32))
+            .otherwise(0)
+            .alias("off_road_km")
+        )
+        .with_columns(
+            # Highway travel is the remaining distance after subtracting off-road km,
+            # only if total distance exceeds 50 km.
+            pl.when(pl.col(distance) > 50)
+            .then(_distance - pl.col("off_road_km"))
+            .otherwise(0)
+            .alias("highway_km")
+        )
+        .with_columns(
+            # Urban travel is capped at 50 km if distance exceeds 50,
+            # otherwise it equals the total distance.
+            pl.when(pl.col(distance) > 50)
+            .then(50)
+            .otherwise(pl.col(distance))
+            .alias("urban_km")
+        )
+    ).drop("random_values").lazy()
+
 
 
 
@@ -314,94 +599,6 @@ def estimate_delivery_days(row):
     # 5. Final delivery time calculation
     delivery_days = base_days * weather_factor + day_adjustment
     return math.ceil(delivery_days)
-
-
-def estimate_delivery_days_polars(
-        df: pl.DataFrame | pl.LazyFrame,
-        col_dist: str = "distance_km",
-        col_weather: str = "weather_severity",
-        col_day_class: str = "day_classification",
-        weather_factor: dict = None,
-        day_adjustment: dict = None
-) -> pl.DataFrame | pl.LazyFrame:
-    """
-    Estimate delivery days for each order based on distance, weather severity,
-    day classification, and random processing time. Column names can be customized.
-
-    Parameters
-    ----------
-    df : pl.DataFrame | pl.LazyFrame
-        Input Polars DataFrame or LazyFrame containing at least:
-        - distance column (default: "distance_km")
-        - weather severity column (default: "weather_severity")
-        - day classification column (default: "day_classification")
-
-    col_dist : str, optional
-        Name of the column representing delivery distance in kilometers.
-        Default is "distance_km".
-
-    col_weather : str, optional
-        Name of the column representing weather severity category.
-        Default is "weather_severity".
-
-    col_day_class : str, optional
-        Name of the column representing day classification.
-        Default is "day_classification".
-
-    weather_factor : dict, optional
-        Mapping of weather severity levels to multipliers.
-        Default: {"Normal": 1.0, "Moderate": 1.15, "Severe": 1.3}
-
-    day_adjustment : dict, optional
-        Mapping of day classifications to additional delay in days.
-        Default: {"Weekdays": 0.0, "Saturday": 0.5, "Sunday": 1.0, "Holiday": 1.5}
-
-    Returns
-    -------
-    pl.DataFrame | pl.LazyFrame
-        Original DataFrame with an additional column:
-        - 'delivery_days': estimated delivery time in days (UInt16)
-    """
-
-    # Determine number of rows depending on DataFrame type
-    if isinstance(df, pl.LazyFrame):
-        length = df.collect().height
-    else:
-        length = df.height
-
-    # Weather impact multiplier (default values if not provided)
-    weather_factor = weather_factor or {"Normal": 1.0, "Moderate": 1.15, "Severe": 1.3}
-
-    # Additional delay based on day classification (default values if not provided)
-    day_adjustment = day_adjustment or {"Weekdays": 0.0, "Saturday": 0.5, "Sunday": 1.0, "Holiday": 1.5}
-
-    # Simulated processing time (e.g., picking, packing, dispatch)
-    processing_days = np.random.uniform(1.0, 2.0, length)
-
-    return (
-        df.with_columns(
-            (
-                # Base random factor depending on distance ranges
-                pl.when(pl.col(col_dist) <= 50).then(pl.lit(np.random.uniform(0.5, 1.5, length)))
-                .when(pl.col(col_dist) <= 150).then(pl.lit(np.random.uniform(1.0, 2.5, length)))
-                .when(pl.col(col_dist) <= 400).then(pl.lit(np.random.uniform(2.0, 4.0, length)))
-                .when(pl.col(col_dist) <= 1000).then(pl.lit(np.random.uniform(4.0, 8.0, length)))
-                .otherwise(pl.lit(np.random.uniform(7.0, 15.0, length)))
-                .alias("random_factor")
-
-                # Apply weather severity multiplier
-                * pl.col(col_weather).replace_strict(weather_factor, default=1.0).alias("weather_factor")
-
-                # Add day classification adjustment
-                + pl.col(col_day_class).replace_strict(day_adjustment, default=0.0).alias("day_adjustment")
-
-                # Add processing time
-                + pl.lit(processing_days)
-            )
-            # Round up to nearest integer and cast to unsigned integer
-            .ceil().cast(pl.UInt16).alias("delivery_days")
-        )
-    )
 
 
 
@@ -1085,58 +1282,36 @@ def day_classification(dates: pd.Series, country: str = 'BR') -> pd.Series:
 def day_classification_lazy(df: pl.DataFrame | pl.LazyFrame, col: str, country: str = "BR") -> pl.DataFrame | pl.LazyFrame:
     """
     Classify days in a datetime column as holidays, weekends, or weekdays.
-
-    Parameters
-    ----------
-    df : pl.LazyFrame
-        A Polars LazyFrame containing a datetime column.
-    col : str
-        The name of the datetime column to classify.
-    country : str, optional
-        The country code (default is "BR") used to retrieve official holidays.
-
-    Returns
-    -------
-    pl.LazyFrame
-        The original LazyFrame with three additional columns:
-        - "is_holiday": Boolean flag indicating if the date is a holiday.
-        - "day_classification": String label ("Saturday", "Sunday", or "Weekday").
-        - "is_weekend": Boolean flag indicating if the date falls on a weekend.
     """
-
+    
     # Extract all unique years present in the datetime column
     years = df.select(pl.col(col).dt.year().unique()).collect().to_series().to_list()
-
+    
     # Retrieve holidays for the specified country and years
     country_holidays = holidays.country_holidays(country.upper(), years=years)
-
-    # Convert holiday dates into a list
+    
+    # Convert holiday dates into a list and then to Polars Series
     holiday_dates = list(country_holidays.keys())
-
-    # Convert holiday dates into a Polars Series of type Date
     holiday_dates_pl = pl.Series(holiday_dates).cast(pl.Date)
-
-    # Add classification columns: holiday flag, day type, and weekend flag
+    
+    # Add classification columns
     return (
-        df.with_columns(
+        df.with_columns([
             # Flag if the date is a holiday
-            pl.col(col).is_in(holiday_dates_pl).alias("is_holiday")
-        )
-        .with_columns(
+            pl.col(col).is_in(holiday_dates_pl).alias("is_holiday"),
+            
             # Classify the day of the week
-            pl.when(pl.col(col).dt.weekday == 6).then(pl.lit("Saturday"))
-            .when(pl.col(col).dt.weekday == 7).then(pl.lit("Sunday"))
+            pl.when(pl.col(col).dt.weekday() == 6)
+            .then(pl.lit("Saturday"))
+            .when(pl.col(col).dt.weekday() == 7)
+            .then(pl.lit("Sunday"))
             .otherwise(pl.lit("Weekday"))
-            .alias("day_classification")
-        )
-        .with_columns(
-            # Flag if the day is a weekend (Saturday or Sunday)
-            pl.col("day_classification")
-            .is_in(["Saturday", "Sunday"])
-            .alias("is_weekend")
-        )
+            .alias("day_classification"),
+            
+            # Flag if the day is a weekend
+            pl.col(col).dt.weekday().is_in([6, 7]).alias("is_weekend")
+        ])
     )
-
 
 
 
@@ -1156,7 +1331,7 @@ def create_stock_distribution_vectorized(stock_min, stock_max, seed: int=None,
         Series of maximum stock quantities for each item.
     seed : int, optional
         Seed for the random number generator to ensure reproducibility.
-    prob_stock : list of float, optionalpl.DataFrame | pl.LazyFrame
+    prob_stock : list of float, optional pl.DataFrame | pl.LazyFrame
         Probabilities for each stock condition: ['out', 'over', 'normal'] respectively.
         Default is [0.12, 0.28, 0.60].
     prob_extreme : list of float, optional
@@ -1293,7 +1468,7 @@ def create_stock_distribution_polars(df: pl.DataFrame | pl.LazyFrame,
                   + (pl.col(max_stock) - pl.col(min_stock))
                   * pl.col("randon_factor"))  # Normal distribution between min and max
             .otherwise(pl.col(min_stock))  # Fallback to minimum stock
-            .cast(pl.Int16)        
+            .cast(pl.Int32)        
             .alias("stock_quantity")
         )
     ).drop(["condition", "extreme_condition", "randon_factor"])
