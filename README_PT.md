@@ -1,74 +1,97 @@
-# 🛍️ Gerador de Dados Sintéticos para Cadeia de Suprimentos de Mercado  
-> **Motor de Alta Fidelidade para Otimização de Estoque e Previsão de Demanda**
+# 🛍️ Gerador de Dados Sintéticos para Cadeia de Suprimentos de Supermercados  
+> **Motor Sintético de Alta Fidelidade para Otimização de Estoque & Previsão de Demanda**  
+> *Agora com implementações em **Pandas** e **Polars** – escolha seu nível de desempenho.*
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/roberto-balbinotti)
 [![Kaggle](https://img.shields.io/badge/Kaggle-20BEFF?style=for-the-badge&logo=Kaggle&logoColor=white)](https://www.kaggle.com/datasets/robertobalbinotti/synthetic-grocery-data)
+
 ---
 
 ## 🎯 Contexto & Objetivos Estratégicos
 
-No setor varejista (mercado), a escassez de dados históricos limpos ou a confidencialidade de dados reais dificulta o desenvolvimento ágil de modelos de IA. Este projeto preenche essa lacuna fornecendo um **Gêmeo Digital** da cadeia de suprimentos, simulando operações complexas e permitindo o **teste de modelos de Machine Learning** em cenários de previsão de demanda e otimização de inventário.
+No setor varejista (supermercados), a escassez de dados históricos limpos ou a confidencialidade dos dados reais dificultam o desenvolvimento ágil de modelos de IA. Este projeto preenche essa lacuna ao fornecer um **Gêmeo Digital** da cadeia de suprimentos, simulando operações complexas e permitindo **testes de modelos de Machine Learning** em cenários de previsão de demanda e otimização de estoque.
 
 **Principais objetivos:**
-1.  **Geração massiva de dados:** Base para o projeto de IA [Smart Supply Chain AI](https://github.com/rbalbinotti/smart-supply-chain-ai).
-2.  **Portfólio técnico:** Demonstrar proficiência em engenharia de dados, modelagem de séries temporais e desenvolvimento de pipelines em Python.
+1. **Geração massiva de dados:** Base para o projeto de IA [Smart Supply Chain AI](https://github.com/rbalbinotti/smart-supply-chain-ai).  
+2. **Portfólio técnico:** Demonstrar proficiência em engenharia de dados, modelagem de séries temporais e desenvolvimento de pipelines em Python.
+
+---
+
+## ⚡ Escolha Seu Motor: Pandas vs. Polars
+
+Este repositório oferece **duas implementações completas** do pipeline de geração de dados, cada uma adaptada a diferentes requisitos de desempenho e realismo:
+
+| Recurso | Implementação Pandas | Implementação Polars |
+|---------|----------------------|----------------------|
+| **Notebook** | `synthetic_grocery.ipynb` | `synthetic_grocery_polars.ipynb` |
+| **Linhas** | ~100.192 | ~300.605 (escalável) |
+| **Colunas finais** | 30 | 31 |
+| **Desempenho** | Single-thread, memória padrão | Multi-thread, Arrow, avaliação preguiçosa |
+| **Melhor uso** | Prototipagem, datasets menores | Produção, simulação em larga escala |
+| **Bibliotecas-chave** | `pandas`, `numpy` | `polars`, `fastparquet` |
+
+Ambas compartilham a mesma lógica modular (`create_data_functions.py` e `weather_conditions.py`), mas diferem nos detalhes de implementação, resultando em **esquemas e riqueza de atributos distintos**.
+
+---
+
+## 📊 Comparação de Esquema & Adições no Polars
+
+A versão Polars traz melhorias que tornam o dataset mais realista e detalhado:
+
+### Esquema Pandas (30 colunas)
+Inclui colunas como: `received_date`, `product_id`, `product`, `category`, `sub_category`, `shelf_life_days`, `maximum_days_on_sale`, `seasonality`, `storage_recommendation`, `unit_of_measurement`, `supplier_id`, `supplier`, `supplier_rating`, `distance_km`, `moq`, `in_season`, `is_holiday`, `day_classification`, `is_weekend`, `sales_demand`, `sales_volume`, `delivery_days`, `min_stock`, `max_stock`, `stock_quantity`, `temperature_classification`, `precipitation_classification`, `wind_classification`, `weather_severity`.
+
+### Esquema Polars (31 colunas – saída final)
+Inclui: `order_purchase_date`, `received_date`, `product_id`, `product`, `category`, `sub_category`, `sales_demand`, `sales_volume`, `seasonality`, `storage_recommendation`, `unit_of_measurement`, `shelf_life_days`, `maximum_days_on_sale`, `supplier_id`, `supplier`, `supplier_rating`, `distance_km`, `moq`, `delivery_days`, `transit_time`, `in_season`, `is_holiday`, `day_classification`, `is_weekend`, `min_stock`, `max_stock`, `stock_quantity`, `temperature_classification`, `precipitation_classification`, `wind_classification`, `weather_severity`.
+
+### ✨ Melhorias no Polars
+- **Segmentação de Estradas:** Modela `urban_km`, `highway_km`, `off_road_km` e calcula **transit_time** com distribuições de velocidade realistas.  
+- **Estoque de Segurança:** `min_stock` e `max_stock` baseados em variabilidade de lead time e confiabilidade do fornecedor.  
+- **Simulação de Pedido de Compra:** `order_purchase_date` derivado de rating do fornecedor, sazonalidade e dias de entrega.  
+- **Quantização:** Colunas numéricas convertidas para tipos menores (UInt16, Float16) para otimização de memória.
 
 ---
 
 ## 🔬 Metodologia & Rigor Estatístico
 
-A simulação segue os princípios de **Decomposição de Série Temporal**, modelando a demanda $D(t)$ como uma função multivariada:
+A simulação segue princípios de **Decomposição de Séries Temporais**, modelando a demanda \(D(t)\) como função multivariada:
 
-$$D(t) = T(t) + S(t) + \sum \beta_i X_i(t) + \epsilon$$
+\[
+D(t) = T(t) + S(t) + \sum \beta_i X_i(t) + \epsilon
+\]
 
--   **$T(t)$:** Tendência de crescimento determinística.
--   **$S(t)$:** Sazonalidade semanal e anual.
--   **$X_i(t)$:** Variáveis exógenas (preço, dados climáticos reais do INMET, feriados).
--   **$\epsilon$:** Ruído gaussiano simulando incertezas do mercado.
+- **\(T(t)\):** Tendência de crescimento.  
+- **\(S(t)\):** Sazonalidade semanal e anual.  
+- **\(X_i(t)\):** Variáveis exógenas (preço, clima real INMET, feriados).  
+- **\(\epsilon\):** Ruído gaussiano simulando incertezas de mercado.  
 
-### Diferencial Técnico: Dados Climáticos Reais
-Diferente de geradores sintéticos comuns, este projeto incorpora **dados meteorológicos reais** (INMET/BDMEP), enriquecidos com feature engineering para mapear severidade climática e capturar correlações reais entre temperatura e demanda de perecíveis.
+**Diferencial técnico:** Uso de dados meteorológicos reais do INMET/BDMEP, enriquecidos com engenharia de atributos para capturar correlações entre clima e demanda de perecíveis.
 
 ---
 
 ## ✨ Componentes do Pipeline
 
-### Série Temporal (`create_data_functions.py`)
--   **Série base:** DataFrame com datas (`ds`), IDs e valores-alvo (demanda/vendas).
--   **Tendência & sazonalidade:** Crescimento e ciclos semanais/anuais.
--   **Features de lag:** `LagFeatureCreator` adiciona dependências temporais (ex.: vendas da semana anterior).
--   **Eventos & feriados:** Impactos de promoções e datas especiais.
--   **Preço:** Relação inversa entre preço e demanda.
+### Séries Temporais (`create_data_functions.py`)
+- Série base com datas, IDs e valores alvo.  
+- Tendência e sazonalidade.  
+- Features de defasagem (`LagFeatureCreator`).  
+- Eventos e feriados.  
+- Preço com relação inversa à demanda.  
 
-### Variáveis Exógenas Climáticas (`weather_conditions.py`)
--   **Temperatura:** Classificada em faixas (Muito Frio, Ameno, Quente).
--   **Precipitação:** Intensidade (Sem chuva → Chuva Violenta).
--   **Vento:** Classificado por velocidade.
--   **Simulação sazonal:** Ajustes baseados em meses e estações.
-
----
-
-## 📊 Estrutura & Resultado Final
-
-O conjunto de dados final é salvo no formato **Parquet** para alta performance, contendo **100.192 linhas e 29 colunas**.
-
-Amostra:
-
-| data_recebimento | produto | categoria | sub_categoria | dias_validade | fornecedor | distancia_km | classe_temp | classe_precip | classe_vento | feriado | demanda_vendas | volume_vendas | qtd_estoque |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 2025-02-04 | Ovo (Galinha) | Laticínios | Ovos | 28 | FreshEggs Co. | 65 | Quente | Sem precip. | Brisa Leve | Falso | Alta | 318 | 1096 |
-| 2023-01-03 | Açúcar | Despensa | Assados | 730 | Atacadista | 25 | Quente | Sem precip. | Brisa Leve | Falso | Alta | 10 | 33 |
-
-> **Nota:** O arquivo completo `grocery_data.parquet` com todas as **100.192 linhas** está disponível para download no **[Kaggle](https://www.kaggle.com/datasets/robertobalbinotti/synthetic-grocery-data)**.
+### Variáveis Climáticas (`weather_conditions.py`)
+- Temperatura (Muito Frio, Temperado, Quente).  
+- Precipitação (Sem chuva → Chuva violenta).  
+- Vento por velocidade.  
+- Ajustes sazonais por mês/estação.  
 
 ---
 
 ## 🛠️ Engenharia de Dados & MLOps
 
--   **Modularização:** Lógica separada em `create_data_functions.py` e `weather_conditions.py`.
--   **Formato otimizado:** `.parquet` para pipelines de Big Data.
--   **Pronto para implantação:** Dockerfile para isolamento de ambiente.
--   **Gestão de dependências:** `pyproject.toml` com PDM.
+- **Modularização:** Lógica compartilhada entre versões.  
+- **Formato otimizado:** Saída em `.parquet`.  
+- **Pronto para deploy:** Dockerfile para isolamento.  
+- **Gerenciamento de dependências:** `pyproject.toml` com **UV** (substitui Conda).  
 
 ---
 
@@ -77,33 +100,51 @@ Amostra:
 ```text
 .
 ├── create_data_functions.py
+├── weather_conditions.py
 ├── data
 │   ├── external
 │   ├── processed
 │   └── raw
-├── Dockerfile
-├── LICENSE
-├── pdm.lock
-├── pyproject.toml
-├── README.md
-├── README_PT.md
 ├── synthetic_grocery.ipynb
-└── weather_conditions.py
-
+├── synthetic_grocery_polars.ipynb
+├── Dockerfile
+├── pyproject.toml
+├── uv.lock
+├── LICENSE
+├── README.md
+└── README_PT.md
 ```
 
 ---
 
 ## 📚 Stack & Referências
 
--   **Core:** `Pandas`, `NumPy`, `Scikit-Learn`, `fastparquet`.
--   **Estatística:** `holidays`, `workalendar`.
--   **Fonte climática:** Dados reais do [**INMET/BDMEP**](https://bdmep.inmet.gov.br/)
--   **Projeto associado:** [Smart supply Chain AI](https://github.com/rbalbinotti/smart-supply-chain-ai)
+- **Core (Pandas):** `pandas`, `numpy`, `scikit-learn`, `fastparquet`.  
+- **Core (Polars):** `polars` com Arrow e execução paralela.  
+- **Estatística:** `holidays`, `workalendar`.  
+- **Clima:** Dados reais do [**INMET/BDMEP**](https://bdmep.inmet.gov.br/).  
+- **Projeto associado:** [Smart Supply Chain AI](https://github.com/rbalbinotti/smart-supply-chain-ai).  
 
 ---
 
-*Desenvolvido por **Roberto Rosário Balbinotti** – Arquiteto de ML & Especialista em Dados.*
-E-mail: rbalbinotti@gmail.com
+## 🚀 Primeiros Passos
+
+Clone o repositório e instale as dependências:
+
+```bash
+git clone https://github.com/rbalbinotti/synthetic-grocery-data.git
+cd synthetic-grocery-data
+
+# Usando UV (recomendado)
+uv sync
+
+# Ou com pip
+pip install -e .
+```
+
+Depois, abra o notebook correspondente e execute todas as células.
 
 ---
+
+*Desenvolvido por **Roberto Rosário Balbinotti** – Arquiteto de ML & Especialista em Dados.*  
+E-mail: rbalbinotti@gmail.com  

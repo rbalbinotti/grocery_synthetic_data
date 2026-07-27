@@ -37,6 +37,75 @@ from scipy.stats import truncnorm
 from workalendar.america import Brazil
 from sklearn.base import BaseEstimator, TransformerMixin
 
+
+def create_purchase_order_polars(df: pl.DataFrame | pl.LazyFrame, seed: int = None) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Generate purchase order dates based on supplier rating, delivery days, and seasonality factors.
+
+    Parameters
+    ----------
+    df : pl.DataFrame | pl.LazyFrame
+        Input Polars DataFrame or LazyFrame containing at least the following columns:
+        - supplier_rating (numeric)
+        - in_season (boolean)
+        - delivery_days (numeric)
+        - received_date (date/datetime)
+
+    seed : int, optional
+        Random seed for reproducibility of generated factors.
+
+    Returns
+    -------
+    pl.DataFrame | pl.LazyFrame
+        DataFrame with a new column:
+        - order_purchase : calculated purchase order date
+
+    Intermediate columns (`rating_penalty`, `season_factor`, `beta_penalty`, `order_days`) are dropped at the end.
+    """
+
+    # Get the number of rows in the DataFrame
+    length = df.collect().height
+
+    # Create a random number generator with optional seed
+    rng = np.random.default_rng(seed=seed)
+
+    # Generate supplier rating penalty values ~ U(0, 2.1)
+    rating_penalty = rng.uniform(low=0, high=2.1, size=length)
+
+    # Generate seasonality factor values ~ U(0.8, 0.9)
+    season_factor = rng.uniform(low=0.8, high=0.9, size=length)
+
+    return (
+        df.with_columns(
+            pl.Series("rating_penalty", rating_penalty),
+            pl.Series("season_factor", season_factor)
+        )
+        # Apply beta penalty based on supplier rating
+        .with_columns(
+            pl.when(pl.col("supplier_rating") < 2)
+            .then(pl.col("rating_penalty") / 2)
+            .when(pl.col("supplier_rating") < 4)
+            .then(pl.col("rating_penalty") / 1.5)
+            .otherwise(pl.col("rating_penalty"))
+            .alias("beta_penalty")
+        )
+        # Calculate order days considering seasonality
+        .with_columns(
+            pl.when(pl.col("in_season"))
+            .then(((pl.col("delivery_days") + pl.col("beta_penalty")) * pl.col("season_factor") + 0.5).round())
+            .otherwise((pl.col("delivery_days") + pl.col("beta_penalty") + 0.5).round())
+            .alias("order_days")
+            .cast(pl.UInt8)
+        )
+        # Compute purchase order date
+        .with_columns(
+            (pl.col("received_date") - pl.duration(days=pl.col("order_days")))
+            .alias("order_purchase_date")
+        )
+    ).drop(["rating_penalty", "season_factor", "beta_penalty", "order_days"])
+
+
+
 def estimate_delivery_polars(
         df: pl.DataFrame | pl.LazyFrame,
         col_transit: str = "transit_time_decimal",
