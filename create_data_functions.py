@@ -25,7 +25,7 @@ Created: 2025
 Version: 1.0
 """
 
-
+import polars as pl
 import pandas as pd
 import numpy as np
 import ast
@@ -33,8 +33,362 @@ import holidays
 import math
 import importlib
 
+from scipy.stats import truncnorm
 from workalendar.america import Brazil
 from sklearn.base import BaseEstimator, TransformerMixin
+
+
+def create_purchase_order_polars(df: pl.DataFrame | pl.LazyFrame, seed: int = None) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Generate purchase order dates based on supplier rating, delivery days, and seasonality factors.
+
+    Parameters
+    ----------
+    df : pl.DataFrame | pl.LazyFrame
+        Input Polars DataFrame or LazyFrame containing at least the following columns:
+        - supplier_rating (numeric)
+        - in_season (boolean)
+        - delivery_days (numeric)
+        - received_date (date/datetime)
+
+    seed : int, optional
+        Random seed for reproducibility of generated factors.
+
+    Returns
+    -------
+    pl.DataFrame | pl.LazyFrame
+        DataFrame with a new column:
+        - order_purchase : calculated purchase order date
+
+    Intermediate columns (`rating_penalty`, `season_factor`, `beta_penalty`, `order_days`) are dropped at the end.
+    """
+
+    # Get the number of rows in the DataFrame
+    length = df.collect().height
+
+    # Create a random number generator with optional seed
+    rng = np.random.default_rng(seed=seed)
+
+    # Generate supplier rating penalty values ~ U(0, 2.1)
+    rating_penalty = rng.uniform(low=0, high=2.1, size=length)
+
+    # Generate seasonality factor values ~ U(0.8, 0.9)
+    season_factor = rng.uniform(low=0.8, high=0.9, size=length)
+
+    return (
+        df.with_columns(
+            pl.Series("rating_penalty", rating_penalty),
+            pl.Series("season_factor", season_factor)
+        )
+        # Apply beta penalty based on supplier rating
+        .with_columns(
+            pl.when(pl.col("supplier_rating") < 2)
+            .then(pl.col("rating_penalty") / 2)
+            .when(pl.col("supplier_rating") < 4)
+            .then(pl.col("rating_penalty") / 1.5)
+            .otherwise(pl.col("rating_penalty"))
+            .alias("beta_penalty")
+        )
+        # Calculate order days considering seasonality
+        .with_columns(
+            pl.when(pl.col("in_season"))
+            .then(((pl.col("delivery_days") + pl.col("beta_penalty")) * pl.col("season_factor") + 0.5).round())
+            .otherwise((pl.col("delivery_days") + pl.col("beta_penalty") + 0.5).round())
+            .alias("order_days")
+            .cast(pl.UInt8)
+        )
+        # Compute purchase order date
+        .with_columns(
+            (pl.col("received_date") - pl.duration(days=pl.col("order_days")))
+            .alias("order_purchase_date")
+        )
+    ).drop(["rating_penalty", "season_factor", "beta_penalty", "order_days"])
+
+
+
+def estimate_delivery_polars(
+        df: pl.DataFrame | pl.LazyFrame,
+        col_transit: str = "transit_time_decimal",
+        col_weather: str = "weather_severity",
+        col_day_class: str = "day_classification",
+        weather_factor: dict = None,
+        day_adjustment: dict = None,
+        daily_drive_limit: float = 8.0,
+        daily_constant_drive: float = 5.5,
+        pause_time: float = 0.5,
+        sleep_hours: float = 11.0,
+        week_max_hours: float = 144.0,
+        weekly_rest: float = 35.0
+) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Estimate delivery duration by simulating realistic driving and rest constraints.
+
+    The calculation accounts for:
+    - Daily driving limits and mandatory sleep cycles
+    - Short pauses during long driving days
+    - Weekly rest periods after exceeding weekly driving hours
+    - Weather severity multipliers (e.g., delays in bad weather)
+    - Day classification adjustments (weekdays, weekends, holidays)
+    - Randomized processing overhead (picking, packing, dispatch)
+
+    Parameters
+    ----------
+    df : pl.DataFrame | pl.LazyFrame
+        Input Polars DataFrame or LazyFrame containing transit data.
+    col_transit : str, default="transit_time_decimal"
+        Column name representing raw transit time in hours.
+    col_weather : str, default="weather_severity"
+        Column name representing weather severity classification.
+    col_day_class : str, default="day_classification"
+        Column name representing day classification (weekday, weekend, holiday).
+    weather_factor : dict, optional
+        Mapping of weather severity to time multipliers. Defaults to:
+        {"Normal": 1.0, "Moderate": 1.15, "Severe": 1.3}.
+    day_adjustment : dict, optional
+        Mapping of day classification to additional delay (hours). Defaults to:
+        {"Weekdays": 0.0, "Saturday": 0.5, "Sunday": 1.0, "Holiday": 1.5}.
+    daily_drive_limit : float, default=8.0
+        Maximum driving hours allowed per day before mandatory sleep.
+    daily_constant_drive : float, default=5.5
+        Driving hours before a short pause is required.
+    pause_time : float, default=0.5
+        Duration of each short pause in hours.
+    sleep_hours : float, default=11.0
+        Duration of mandatory sleep after exceeding daily drive limit.
+    week_max_hours : float, default=144.0
+        Maximum weekly driving hours before mandatory weekly rest.
+    weekly_rest : float, default=35.0
+        Duration of weekly rest in hours.
+
+    Returns
+    -------
+    pl.DataFrame | pl.LazyFrame
+        DataFrame with additional column:
+        - delivery_days : Final estimated delivery time in days.
+    """
+
+    # Determine number of rows depending on DataFrame type
+    if isinstance(df, pl.LazyFrame):
+        length = df.collect().height
+    else:
+        length = df.height
+
+    # Default weather multipliers
+    weather_factor = weather_factor or {"Normal": 1.0, "Moderate": 1.15, "Severe": 1.3}
+
+    # Default day adjustments
+    day_adjustment = day_adjustment or {"Weekdays": 0.0, "Saturday": 0.5, "Sunday": 1.0, "Holiday": 1.5}
+
+    # Random processing overhead (between 4 and 36 hours)
+    processing_hours = np.random.uniform(4.0, 36.0, length)
+
+    return (
+        df.with_columns([
+            # Number of full sleep cycles (11h each) based on daily driving limit
+            (pl.col(col_transit) // daily_drive_limit).alias("num_sleeps"),
+
+            # Remaining driving time after last full day
+            (pl.col(col_transit) % daily_drive_limit).alias("remainder_drive"),
+
+            # Number of weekly rests required
+            (pl.col(col_transit) // week_max_hours).alias("num_weekly_rests")
+        ])
+        .with_columns([
+            # Short pauses:
+            # - Each full 8h driving day guarantees one pause
+            # - Remaining driving time adds a pause if >= 5.5h
+            (
+                (pl.col("num_sleeps") * (daily_drive_limit // daily_constant_drive)) +
+                (pl.col("remainder_drive") // daily_constant_drive)
+            ).alias("num_pauses")
+        ])
+        .with_columns([
+            # Adjusted transit time including pauses, sleep, and weekly rests
+            (
+                pl.col(col_transit) +
+                (pl.col("num_pauses") * pl.lit(pause_time)) +
+                (pl.col("num_sleeps") * pl.lit(sleep_hours)) +
+                (pl.col("num_weekly_rests") * pl.lit(weekly_rest))
+            ).alias("transit_time")
+        ])
+        .with_columns([
+            # Final delivery time in days:
+            # - Apply weather multiplier
+            # - Add day classification adjustment
+            # - Add processing overhead
+            (
+                (pl.col("transit_time") * pl.col(col_weather).replace_strict(weather_factor, default=1.0))
+                + pl.col(col_day_class).replace_strict(day_adjustment, default=0.0)
+                + pl.lit(processing_hours)
+            ).alias("delivery_hours")
+        ])
+        .with_columns([
+            # Convert total hours to days
+            (pl.col("delivery_hours") / pl.lit(24)).alias("delivery_days")
+        ])
+        .drop("transit_time_decimal", "num_sleeps", "remainder_drive", "num_weekly_rests", "num_pauses", "delivery_hours")
+    )
+
+
+
+def simulate_distribution_speeds(
+    X: pl.DataFrame | pl.LazyFrame, 
+    seed=456,
+    # Urban Parameters
+    min_speed_urban=5,
+    max_speed_urban=60,
+    dp_urban=8,
+    # Off-Road Parameters
+    min_speed_off_road=10,
+    max_speed_off_road=80,
+    dp_off_road=12,
+    # Highway Parameters
+    min_speed_road=20,
+    max_speed_road=110,
+    dp_speed_road=18
+) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Simulates speed distributions for different road types (urban, off-road, highway)
+    and calculates the total transit time in minutes.
+
+    Parameters
+    ----------
+    X : pl.DataFrame | pl.LazyFrame
+        Input dataset containing distances (off_road_km, highway_km, urban_km).
+    seed : int, optional
+        Random seed for reproducibility (default=456).
+    min_speed_urban, max_speed_urban, dp_urban : float
+        Parameters for truncated normal distribution of urban speeds.
+    min_speed_off_road, max_speed_off_road, dp_off_road : float
+        Parameters for lognormal distribution of off-road speeds.
+    min_speed_road, max_speed_road, dp_speed_road : float
+        Parameters for lognormal distribution of highway speeds.
+
+    Returns
+    -------
+    pl.DataFrame | pl.LazyFrame
+        DataFrame with a new column `transit_time_minute` representing
+        the total travel time in minutes.
+    """
+
+    is_lazy = isinstance(X, pl.LazyFrame)
+    df = X.collect() if is_lazy else X
+    length = df.height
+    
+    rng = np.random.default_rng(seed=seed)
+        
+    # Automatic calculation of mean speeds based on provided parameters
+    mean_speed_urban = (max_speed_urban + min_speed_urban) / 2
+    mean_speed_off_road = (max_speed_off_road + min_speed_off_road) / 2
+    mean_speed_road = (max_speed_road + min_speed_road) / 2
+
+    # 1. Calculate sigma and mu for the lognormal distribution
+    sigma_off_road = np.sqrt(np.log(1 + (dp_off_road**2 / mean_speed_off_road**2)))
+    mu_off_road = np.log(mean_speed_off_road) - (sigma_off_road**2 / 2)
+
+    sigma_road = np.sqrt(np.log(1 + (dp_speed_road**2 / mean_speed_road**2)))
+    mu_road = np.log(mean_speed_road) - (sigma_road**2 / 2)
+
+    # 2. Generate arrays with simulated speeds
+    speed_off_road_arr = rng.lognormal(mean=mu_off_road, sigma=sigma_off_road, size=length)
+    speed_highway_arr = rng.lognormal(mean=mu_road, sigma=sigma_road, size=length)
+    speed_urban_arr = truncnorm.rvs(
+        (min_speed_urban - mean_speed_urban) / dp_urban, 
+        (max_speed_urban - mean_speed_urban) / dp_urban, 
+        loc=mean_speed_urban, 
+        scale=dp_urban, 
+        size=length, 
+        random_state=seed
+    )
+
+    # 3. Add new columns with simulated speeds
+    result_df = df.with_columns((
+       pl.Series("mean_speed_off_road", speed_off_road_arr),
+       pl.Series("mean_speed_highway", speed_highway_arr),
+       pl.Series("mean_speed_urban", speed_urban_arr))
+    )
+
+    # 4. Calculate total transit time in minutes
+    result_df = result_df.with_columns([
+        (
+            (pl.col("off_road_km") / pl.col("mean_speed_off_road"))
+            + (pl.col("highway_km") / pl.col("mean_speed_highway"))
+            + (pl.col("urban_km") / pl.col("mean_speed_urban"))
+        )
+        .alias("transit_time_decimal")  
+    ]).drop(["off_road_km", "highway_km", "urban_km", "mean_speed_off_road", "mean_speed_highway", "mean_speed_urban"])
+
+    return result_df.lazy() if is_lazy else result_df
+
+
+
+
+def road_simulation_polars(
+        df: pl.DataFrame | pl.LazyFrame,
+        distance: str = "distance_km",
+        subcategory: str = "sub_category",
+        category_off_road: tuple = ("Meat", "Seafood", "Vegetables", "Fruits", "Dairy", "Eggs", "Grains & Rice")
+) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Simulate road usage distribution (urban, highway, off-road) based on product categories and travel distance.
+
+    Parameters
+    ----------
+    df : pl.DataFrame | pl.LazyFrame
+        Input Polars DataFrame containing distance and category information.
+    distance : str, default="distance_km"
+        Column name representing the total travel distance in kilometers.
+    subcategory : str, default="sub_category"
+        Column name representing the product subcategory.
+    category_off_road : tuple, default=("Meat", "Seafood", "Vegetables", "Fruits", "Dairy", "Eggs", "Grains & Rice")
+        Tuple of product subcategories that require off-road travel.
+
+    Returns
+    -------
+    pl.DataFrame | pl.LazyFrame
+        DataFrame with three new columns:
+        - "off_road_km": estimated kilometers traveled off-road
+        - "highway_km": estimated kilometers traveled on highways
+        - "urban_km": estimated kilometers traveled in urban areas
+    """
+
+    # Generate a random factor between 0.1 and 0.4
+    random_values = np.random.uniform(0.1, 0.4, size=df.collect().height)
+
+
+    # Adjusted distance (subtracting 50 km to account for urban travel)
+    _distance = pl.col(distance) - 50
+
+    return (
+        df.with_columns(
+            pl.Series(random_values).alias("random_values")
+        )
+        .with_columns(
+            # Off-road travel applies only if the product is in the off-road category
+            # and total distance exceeds 50 km. Otherwise, set to 0.
+            pl.when((pl.col(subcategory).is_in(category_off_road)) & (pl.col(distance) > 50))
+            .then((_distance * pl.col("random_values")).cast(pl.Int32))
+            .otherwise(0)
+            .alias("off_road_km")
+        )
+        .with_columns(
+            # Highway travel is the remaining distance after subtracting off-road km,
+            # only if total distance exceeds 50 km.
+            pl.when(pl.col(distance) > 50)
+            .then(_distance - pl.col("off_road_km"))
+            .otherwise(0)
+            .alias("highway_km")
+        )
+        .with_columns(
+            # Urban travel is capped at 50 km if distance exceeds 50,
+            # otherwise it equals the total distance.
+            pl.when(pl.col(distance) > 50)
+            .then(50)
+            .otherwise(pl.col(distance))
+            .alias("urban_km")
+        )
+    ).drop("random_values").lazy()
+
 
 
 
@@ -382,6 +736,72 @@ def create_min_max_stock(
 
 
 
+def min_max_stock_polars(df: pl.DataFrame | pl.LazyFrame) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Calculate minimum and maximum stock levels for products based on supplier performance 
+    and sales volatility.
+
+    This function derives inventory thresholds by grouping data by supplier and product.
+    It calculates the minimum stock using maximum lead times and determines the maximum 
+    stock by adding the Minimum Order Quantity (MOQ) to the calculated minimum.
+
+    Parameters
+    ----------
+    df : pl.DataFrame | pl.LazyFrame
+        Input data containing the following columns:
+        - supplier_id: Unique identifier for the supplier.
+        - product_id: Unique identifier for the product.
+        - sales_volume: Historical units sold.
+        - delivery_days: Lead time in days.
+        - supplier_rating: Numerical rating (1-5) used for safety stock adjustment.
+        - moq: Minimum Order Quantity defined by the supplier.
+
+    Returns
+    -------
+    pl.DataFrame | pl.LazyFrame
+        The original dataframe augmented with two new columns:
+        - min_stock (Int32): The reorder point (Mean sales * Maximum lead time).
+        - max_stock (Int32): The maximum target inventory level (min_stock + moq).
+    """
+    
+    # Grouping keys used for window functions to ensure consistency across the same product/supplier
+    partition = ["supplier_id", "product_id"]
+
+    return (
+        df.with_columns([
+            # Calculate Min Stock: Product of maximum demand and maximum lead time.
+            # Cast to Int32 to prevent overflow for large inventory counts.
+            (
+                pl.col("sales_volume").mean().over(partition) * pl.col("delivery_days").max().over(partition)
+            ).cast(pl.Int32).alias("min_stock"),
+
+            # Calculate Safety Stock: Uses a service factor (1.65 for ~95% service level) 
+            # and applies a multiplier based on supplier reliability/rating.
+            pl.when(pl.col("supplier_rating") >= 4)
+            .then(
+                pl.col("sales_volume").std().over(partition)
+                * pl.col("delivery_days").max().over(partition).sqrt()
+                * 1.65 * 1.2
+            )
+            .when(pl.col("supplier_rating") >= 2)
+            .then(
+                pl.col("sales_volume").std().over(partition)
+                * pl.col("delivery_days").max().over(partition).sqrt()
+                * 1.65 * 1.1
+            )
+            .otherwise(
+                pl.col("sales_volume").std().over(partition)
+                * pl.col("delivery_days").max().over(partition).sqrt()
+                * 1.65
+            ).alias("stock_safety")
+        ])
+        .with_columns([
+            # Calculate Max Stock: Defined as the reorder point plus the Minimum Order Quantity.
+            (pl.col("min_stock") + pl.col("moq")).cast(pl.Int32).alias("max_stock")
+        ])
+    ).drop("stock_safety") # Remove intermediate calculation column before returning
+
+
 def simulate_purchase_order_columns(df, random_state=None):
     """
     Simulates purchase order-related columns based on product attributes, logistics, and calendar effects.
@@ -604,6 +1024,127 @@ def simulate_sales_volume(df, random_state=None):
 
 
 
+def simulate_sales_volume_polars(
+        df: pl.DataFrame | pl.LazyFrame, 
+        base_sales_volume: dict = None,
+        turnover_multiplier: dict = None,
+        demand_boost: dict = None,
+        weather_multiplier: dict = None
+    ) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Simulate sales volume for product subcategories using multiple factors.
+
+    Parameters
+    ----------
+    df : pl.DataFrame | pl.LazyFrame
+        Input Polars DataFrame containing product information. 
+        Must include columns: 'sub_category', 'shelf_life_days', 'sales_demand',
+        'in_season', 'is_holiday', 'is_weekend', 'weather_severity'.
+    base_sales_volume : dict, optional
+        Dictionary mapping subcategories to their baseline sales volume.
+        Defaults to predefined values if not provided.
+    turnover_multiplier : dict, optional
+        Dictionary mapping subcategories to turnover multipliers.
+        Defaults to predefined values if not provided.
+    demand_boost : dict, optional
+        Dictionary mapping demand levels (e.g., 'High', 'Low') to multipliers.
+        Defaults to predefined values if not provided.
+    weather_multiplier : dict, optional
+        Dictionary mapping weather severity levels to multipliers.
+        Defaults to predefined values if not provided.
+
+    Returns
+    -------
+    pl.DataFrame | pl.LazyFrame
+        A Polars DataFrame with additional column:
+        - 'sales_volume': final simulated sales volume (rounded, min=1)
+    """
+
+    # Default baseline sales volume per subcategory
+    if base_sales_volume is None:
+        base_sales_volume = {
+            'Baking Supplies': 10, 'Bread': 117, 'Breakfast Foods': 40, 'Canned Fish': 13, 'Canned Goods': 50,
+            'Coffee': 33, 'Condiments': 30, 'Dairy': 107, 'Desserts': 23, 'Dried Fruits': 10, 'Eggs': 93,
+            'Fruits': 167, 'Grains & Rice': 60, 'Juices': 53, 'Meat': 133, 'Nuts & Seeds': 13, 'Oils & Vinegars': 27,
+            'Pastries': 33, 'Plant-Based Milk': 17, 'Plant-Based Proteins': 8, 'Seafood': 10, 'Snacks': 83,
+            'Spices': 20, 'Spreads': 17, 'Sweeteners': 23, 'Tea': 20, 'Vegetables': 160
+        }
+
+    # Default turnover multipliers per subcategory
+    if turnover_multiplier is None:
+        turnover_multiplier = {
+            'Baking Supplies': 0.9, 'Bread': 2.5, 'Breakfast Foods': 1.7, 'Canned Fish': 0.9, 'Canned Goods': 1.5,
+            'Coffee': 1.7, 'Condiments': 1.3, 'Dairy': 2.4, 'Desserts': 1.1, 'Dried Fruits': 1.0, 'Eggs': 2.3,
+            'Fruits': 2.2, 'Grains & Rice': 1.5, 'Juices': 1.8, 'Meat': 2.1, 'Nuts & Seeds': 1.0, 'Oils & Vinegars': 1.2,
+            'Pastries': 1.6, 'Plant-Based Milk': 1.4, 'Plant-Based Proteins': 0.8, 'Seafood': 0.8, 'Snacks': 2.0,
+            'Spices': 1.2, 'Spreads': 1.1, 'Sweeteners': 1.2, 'Tea': 1.1, 'Vegetables': 2.2
+        }
+
+    # Default demand boost multipliers
+    if demand_boost is None:
+        demand_boost = {
+            'Very High': 1.8,
+            'High': 1.5,
+            'Normal': 1.0,
+            'Low': 0.6
+        }
+
+    # Default weather severity multipliers
+    if weather_multiplier is None:
+        weather_multiplier = {
+            'Catastrophic': 0.1,
+            'Extreme': 0.6,
+            'Severe': 0.8,
+            'Moderate': 0.95,
+            'Normal': 1.0
+        }
+
+    # Apply transformations step by step
+    return (
+        df.with_columns(
+            # Step 1: Assign baseline volume and initial turnover factor
+            base_volume = pl.col("sub_category").replace_strict(base_sales_volume, default=50),
+            turnover_factor = pl.col("sub_category").replace_strict(turnover_multiplier, default=1.0)
+        ).with_columns(
+            # Step 2: Apply multipliers (shelf life, demand, seasonality, holiday/weekend, weather)
+            turnover_factor = (
+                pl.col("turnover_factor")
+                # Shelf life effect
+                * pl.when(pl.col("shelf_life_days") <= 2).then(3.0)
+                 .when(pl.col("shelf_life_days") <= 3).then(2.5)
+                 .when(pl.col("shelf_life_days") <= 7).then(2.0)
+                 .otherwise(1.0)
+                # Demand effect
+                * pl.col("sales_demand").replace_strict(demand_boost, default=1.0)
+                # Seasonality effect
+                * pl.when(pl.col("in_season")).then(1.5).otherwise(1.0)
+                # Holiday/Weekend effect
+                * pl.when(pl.col("is_holiday")).then(1.6)
+                 .when(pl.col("is_weekend")).then(1.3)
+                 .otherwise(1.0)
+                # Weather effect
+                * pl.col("weather_severity").replace_strict(weather_multiplier, default=1.0)
+            )
+        ).with_columns(
+            # Step 3: Add random noise to simulate variability
+            sales_volume = (
+                pl.col("base_volume") 
+                + (pl.Series(np.random.normal(loc=0.0, scale=2.5, size=df.collect().height)) 
+                   * pl.col("turnover_factor")) 
+            )
+        ).with_columns(
+            # Step 4: Round values and enforce minimum of 0
+            sales_volume = (
+                pl.when(pl.col("sales_volume") < 1)
+                 .then(0)
+                 .otherwise(pl.col("sales_volume"))
+                 .round(0)
+                 .cast(pl.Int64)
+            )
+        )
+    ).drop(["base_volume", "turnover_factor"])
+
+
 
 def simulate_stock_quantity(row: dict):
     """
@@ -708,6 +1249,57 @@ def classify_grocery_demand(dates: pd.Series, country: str = 'BR') -> pd.Series:
     return dates.apply(classify_single)
 
 
+def classify_grocery_demand_polars(
+    df: pl.DataFrame | pl.LazyFrame, 
+    columns_date: str, 
+    country: str = 'BR'
+) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Classify grocery sales demand levels based on dates and holidays.
+
+    Parameters
+    ----------
+    df : pl.DataFrame or pl.LazyFrame
+        Input Polars DataFrame or LazyFrame containing grocery sales data.
+    columns_date : str
+        Name of the column containing date values.
+    country : str, optional
+        Country code (default is 'BR') used to determine national holidays.
+
+    Returns
+    -------
+    pl.DataFrame or pl.LazyFrame
+        Same type as input, with an additional column 'sales_demand'
+        categorizing demand as "Very High", "High", or "Normal".
+    """
+
+    # Detect if input is LazyFrame
+    is_lazy = isinstance(df, pl.LazyFrame)
+
+    # Get unique years (precisa coletar apenas esse resultado)
+    years = df.select(pl.col(columns_date).dt.year().unique()).collect()[columns_date]
+    
+    country_holidays = holidays.country_holidays(country.upper(), years=years)
+
+    # Define classification expression (Expr)
+    demand_expr = (
+        pl.when(pl.col(columns_date).is_in(country_holidays))
+        .then(pl.lit("Very High"))
+        .when(pl.col(columns_date).dt.day().is_between(1, 10))
+        .then(pl.lit("High"))
+        .when(pl.col(columns_date).dt.weekday() >= 6)  # Saturday = 6, Sunday = 7
+        .then(pl.lit("High"))
+        .otherwise(pl.lit("Normal"))
+        .alias("sales_demand")
+    )
+
+    # Apply expression
+    df = df.with_columns(demand_expr)
+
+    # Return in same format as input
+    return df.lazy() if is_lazy else df
+
+
 
 
 
@@ -756,6 +1348,41 @@ def day_classification(dates: pd.Series, country: str = 'BR') -> pd.Series:
     return dates.apply(classify_single)
 
 
+def day_classification_lazy(df: pl.DataFrame | pl.LazyFrame, col: str, country: str = "BR") -> pl.DataFrame | pl.LazyFrame:
+    """
+    Classify days in a datetime column as holidays, weekends, or weekdays.
+    """
+    
+    # Extract all unique years present in the datetime column
+    years = df.select(pl.col(col).dt.year().unique()).collect().to_series().to_list()
+    
+    # Retrieve holidays for the specified country and years
+    country_holidays = holidays.country_holidays(country.upper(), years=years)
+    
+    # Convert holiday dates into a list and then to Polars Series
+    holiday_dates = list(country_holidays.keys())
+    holiday_dates_pl = pl.Series(holiday_dates).cast(pl.Date)
+    
+    # Add classification columns
+    return (
+        df.with_columns([
+            # Flag if the date is a holiday
+            pl.col(col).is_in(holiday_dates_pl).alias("is_holiday"),
+            
+            # Classify the day of the week
+            pl.when(pl.col(col).dt.weekday() == 6)
+            .then(pl.lit("Saturday"))
+            .when(pl.col(col).dt.weekday() == 7)
+            .then(pl.lit("Sunday"))
+            .otherwise(pl.lit("Weekday"))
+            .alias("day_classification"),
+            
+            # Flag if the day is a weekend
+            pl.col(col).dt.weekday().is_in([6, 7]).alias("is_weekend")
+        ])
+    )
+
+
 
 
 def create_stock_distribution_vectorized(stock_min, stock_max, seed: int=None, 
@@ -773,7 +1400,7 @@ def create_stock_distribution_vectorized(stock_min, stock_max, seed: int=None,
         Series of maximum stock quantities for each item.
     seed : int, optional
         Seed for the random number generator to ensure reproducibility.
-    prob_stock : list of float, optional
+    prob_stock : list of float, optional pl.DataFrame | pl.LazyFrame
         Probabilities for each stock condition: ['out', 'over', 'normal'] respectively.
         Default is [0.12, 0.28, 0.60].
     prob_extreme : list of float, optional
@@ -838,6 +1465,83 @@ def create_stock_distribution_vectorized(stock_min, stock_max, seed: int=None,
             results[i] = int(np.floor(stock_min.iloc[i] * divider))
 
     return results
+
+
+def create_stock_distribution_polars(df: pl.DataFrame | pl.LazyFrame,
+                                     min_stock: str = "min_stock",
+                                     max_stock: str = "max_stock",
+                                     prob_stock: list = [0.11, 0.25, 0.60, 0.04],
+                                     stock_conditions: list = ['out', 'over', 'normal', 'extreme'],
+                                     seed: int = None
+                                     ) -> pl.DataFrame | pl.LazyFrame:
+    """
+    Generate a stock distribution simulation using Polars DataFrame or LazyFrame.
+
+    Parameters
+    ----------
+    df : pl.DataFrame | pl.LazyFrame
+        Input Polars DataFrame or LazyFrame containing stock columns.
+    min_stock : str, default="min_stock"
+        Column name representing the minimum stock value.
+    max_stock : str, default="max_stock"
+        Column name representing the maximum stock value.
+    prob_stock : list, default=[0.11, 0.25, 0.60, 0.04]
+        Probability distribution for each stock condition.
+        Must align with `stock_conditions` order.
+    stock_conditions : list, default=['out', 'over', 'normal', 'extreme']
+        Possible stock condition categories.
+    seed : int, optional
+        Random seed for reproducibility.
+
+    Returns
+    -------
+    pl.DataFrame | pl.LazyFrame
+        Original DataFrame with additional columns:
+        - "condition": chosen stock condition
+        - "extreme_condition": random extreme multiplier
+        - "randon_factor": random float between 0 and 1
+        - "stock_quantity": simulated stock quantity based on condition
+    """
+
+    # Initialize random number generator with optional seed
+    rng = np.random.default_rng(seed=seed)
+
+    # Get the number of rows in the DataFrame
+    length = df.collect().height
+
+    # Randomly assign conditions based on given probabilities
+    conditions = rng.choice(stock_conditions, size=length, p=prob_stock)
+
+    # Generate extreme condition multipliers (always >= 1.0)
+    extreme_conditions = abs(rng.normal(scale=1.08, size=length)) + 1.0
+
+    # Generate random factors between 0 and 1
+    randon_factor = rng.random(length)
+
+    # Add new columns and compute stock_quantity based on condition rules
+    return (
+        df.with_columns(
+            pl.Series("condition", conditions),
+            pl.Series("extreme_condition", extreme_conditions),
+            pl.Series("randon_factor", randon_factor)
+        )
+        .with_columns(
+            pl.when(pl.col("condition") == "out")
+            .then(0)  # No stock available
+            .when(pl.col("condition") == "over")
+            .then(pl.col(max_stock) * (pl.col("extreme_condition")))  # Overstock scenario
+            .when(pl.col("condition") == "extreme")
+            .then(pl.col(max_stock) * (pl.col("extreme_condition") + 0.8))  # Extreme overstock
+            .when(pl.col("condition") == "normal")
+            .then(pl.col(min_stock)
+                  + (pl.col(max_stock) - pl.col(min_stock))
+                  * pl.col("randon_factor"))  # Normal distribution between min and max
+            .otherwise(pl.col(min_stock))  # Fallback to minimum stock
+            .cast(pl.Int32)        
+            .alias("stock_quantity")
+        )
+    ).drop(["condition", "extreme_condition", "randon_factor"])
+
 
 
 
