@@ -1,4 +1,8 @@
 mprofile*.dat
+exec*.csv
+plot.ipynb
+sinthetic_pandas.py
+*.png
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
